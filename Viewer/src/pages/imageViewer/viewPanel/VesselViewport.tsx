@@ -5,6 +5,7 @@ import { decodeMPR, decodeVR } from '@/utils/decodeImage';
 import * as cornerstone from 'cornerstone-core';
 import styles from './VesselViewport.less';
 import { cornerstoneToolsInit } from '@/common/cornerstone/cornerstoneToolsManager';
+import { enableElement } from '@/common/cornerstone/cornerstoneManager';
 
 const VesselViewport: React.FC<any> = (props) => {
   const { imgId, imageData, dispatch, currentViewPort } = props;
@@ -30,9 +31,9 @@ const VesselViewport: React.FC<any> = (props) => {
   };
 
   useEffect(() => {
-    const { base64Data } = imageInfo;
-    if (base64Data) {
-      cornerstone.enable(elementRef.current);
+    if (imageInfo) {
+      const { base64Data } = imageInfo;
+      enableElement(elementRef.current);
       const cornerstoneMetaData: any = imgId.includes('vr')
         ? decodeVR(base64Data, imgId)
         : decodeMPR(base64Data, imgId);

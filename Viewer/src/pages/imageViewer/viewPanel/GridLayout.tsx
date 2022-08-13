@@ -35,7 +35,7 @@ const GridLayouts: React.FC<any> = (props) => {
           {layout.map((item: any, index: number) => {
             return (
               <div key={item.i}>
-                <VesselViewport imgId={imageID[index]} />
+                <VesselViewport imgId={imageID[index] ? imageID[index] : index} />
               </div>
             );
           })}

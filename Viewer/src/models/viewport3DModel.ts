@@ -1,3 +1,4 @@
+import { setActiveTool } from '@/common/cornerstone/cornerstoneToolsManager';
 import type { ImmerReducer, Subscription } from 'umi';
 
 interface viewport3DModelType {
@@ -7,6 +8,7 @@ interface viewport3DModelType {
     InitState: ImmerReducer<viewport3DStateType>;
     setLayout: ImmerReducer<viewport3DStateType>;
     setViewPortActive: ImmerReducer<viewport3DStateType>;
+    setUsToolsState: ImmerReducer<viewport3DStateType>;
   };
   subscriptions: {
     setup: Subscription;
@@ -16,6 +18,18 @@ interface viewport3DModelType {
 const viewport3DModelState = () => ({
   currentViewPort: { imgId: 'plane_type_vr' },
   layout: [2, 2],
+  usToolsState: {
+    Wwwc: false,
+    Zoom: false,
+    Pan: false,
+    Length: false,
+    Angle: false,
+    Probe: false,
+    EllipticalRoi: false,
+    RectangleRoi: false,
+    ArrowAnnotate: false,
+    Magnify: false,
+  },
 });
 
 const viewport3DModel: viewport3DModelType = {
@@ -30,6 +44,20 @@ const viewport3DModel: viewport3DModelType = {
     },
     setViewPortActive(state: viewport3DStateType, action) {
       state.currentViewPort = Object.assign({}, state.currentViewPort, action.payload);
+    },
+    setUsToolsState(state: viewport3DStateType, action) {
+      const tool = action.payload;
+      const obj = { ...state.usToolsState };
+      // ReferenceLines和usToolsState中其他工具互不影响
+      for (const key in obj) {
+        if (key === tool && !obj[key]) {
+          obj[key] = true;
+        } else {
+          obj[key] = false;
+        }
+      }
+      setActiveTool(obj);
+      state.usToolsState = obj;
     },
   },
   subscriptions: {

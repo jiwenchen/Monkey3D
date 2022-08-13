@@ -1,34 +1,29 @@
+import { getDvaApp } from 'umi';
 import * as cornerstoneTools from 'cornerstone-tools';
 import * as cornerstone from 'cornerstone-core';
 import * as cornerstoneMath from 'cornerstone-math';
 import Hammer from 'hammerjs';
-
+import $ from 'jquery';
 cornerstoneTools.external.cornerstone = cornerstone;
 cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
 cornerstoneTools.external.Hammer = Hammer;
 cornerstoneTools.init();
 
-export const usToolsState = {
-  Wwwc: true,
-  Zoom: false,
-  Pan: false,
-  Length: false,
-  Angle: false,
-  Probe: false,
-  EllipticalRoi: false,
-  RectangleRoi: false,
-  ArrowAnnotate: false,
-  Magnify: false,
+export const resetElement = (element: null | HTMLElement) => {
+  if (!element) return;
+  cornerstone.reset(element);
 };
 
-export const setActiveTool = (tool: string) => {
-  Object.keys(usToolsState).map((item) => {
-    if (item === tool) {
-      cornerstoneTools.setToolActive(item, { mouseButtonMask: 1 });
-    } else {
-      cornerstoneTools.setToolEnabled(item);
-    }
-  });
+export const setActiveTool = (usToolsState: any) => {
+  for (const tool in usToolsState) {
+    $('.vessel-cornerstone-image').each((i: number, element: HTMLElement) => {
+      if (usToolsState[tool]) {
+        cornerstoneTools.setToolActive(tool, { mouseButtonMask: 1 });
+      } else {
+        cornerstoneTools.setToolEnabledForElement(element, tool);
+      }
+    });
+  }
 };
 
 export const cornerstoneToolsInit = () => {
@@ -37,9 +32,10 @@ export const cornerstoneToolsInit = () => {
   cornerstoneTools.addTool(apiTool, { configuration: { loop: true } });
   cornerstoneTools.setToolActive('StackScrollMouseWheel', {});
 
+  const dva = getDvaApp()._store;
+  const usToolsState = dva.getState().viewport3DModel.usToolsState;
   Object.keys(usToolsState).map((item: string, index: number) => {
     const api = cornerstoneTools[`${item}Tool`];
     cornerstoneTools.addTool(api);
   });
-  setActiveTool('Wwwc');
 };

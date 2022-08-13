@@ -12,11 +12,11 @@ interface ViewportGridProps {
 
 function ViewportGrid(props: ViewportGridProps) {
   const { layout } = props;
+  const [numRows, numColumns] = layout;
   const [rowHeight, setRowHeight] = useState<number>();
   const [layouts, setLayouts] = useState<any>();
   const [width, setWidth] = useState<any>();
   const [cols, setCols] = useState<any>();
-  const [numRows, numColumns] = layout;
 
   useEffect(() => {
     //切换布局，重新设置行高, cols和layout
