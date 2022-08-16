@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { connect } from 'umi';
 import { resetElement } from '@/common/cornerstone/cornerstoneToolsManager';
 import { Button } from 'antd';
+import Upload from './upload';
 
 interface ImageViewerProps {
   dispatch: Dispatch;
@@ -27,6 +28,7 @@ const Tool: React.FC<ImageViewerProps> = (props) => {
 
   return (
     <>
+      <Upload />
       {Object.keys(usToolsState).map((tool) => (
         <div
           key={tool}
