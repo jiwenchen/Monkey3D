@@ -65,11 +65,7 @@ const viewport3DModel: viewport3DModelType = {
      * 监听路由并记录
      */
     setup({ dispatch, history }) {
-      history.listen(({ pathname }: { pathname: any }) => {
-        if (pathname.indexOf('/listViewer') > -1) {
-          dispatch({ type: 'InitState' });
-        }
-      });
+      history.listen(({ pathname }: { pathname: any }) => {});
     },
   },
 };
