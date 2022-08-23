@@ -45,11 +45,7 @@ const image3DModel: image3DModelType = {
   },
   subscriptions: {
     setup({ dispatch, history }) {
-      history.listen(({ pathname }) => {
-        if (pathname.indexOf('/listViewer') > -1) {
-          dispatch({ type: 'InitState' });
-        }
-      });
+      history.listen(({ pathname }) => {});
     },
   },
 };

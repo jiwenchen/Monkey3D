@@ -6,7 +6,7 @@ import styles from './upload.less';
 interface UploadStateType {}
 
 const { NODE_ENV } = process.env;
-const viewerPath = NODE_ENV == 'development' ? '' : '/listViewer';
+const viewerPath = NODE_ENV == 'development' ? '' : '/imageViewer';
 const uploadPath = `${window.location.protocol}//${
   window.location.host + viewerPath
 }/worker/UploadWork.js`;
