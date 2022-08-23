@@ -40,14 +40,14 @@ export default defineConfig({
   // esbuild is father build tools
   // https://umijs.org/plugins/plugin-esbuild
   esbuild: {},
-  title: 'iRadio',
+  title: 'Monkey3D',
   ignoreMomentLocale: true,
   proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
-    basePath: '/',
+    basePath: '/hm',
   },
   publicPath: NODE_ENV == 'development' ? '/' : './', //当打包的时候，会在静态文件路径前面添加 publicPath 的值
-  base: '/', //设置路由前缀
+  base: '/hm', //设置路由前缀
   // Fast Refresh 热更新
   fastRefresh: {},
   nodeModulesTransform: { type: 'none' },

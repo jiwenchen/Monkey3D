@@ -6,7 +6,7 @@
  * For details, please see
  * https://pro.ant.design/docs/deploy
  */
-const proxyDev = 'http://192.168.6.34';
+const proxyDev = 'http://192.168.6.41:7788';
 export const proxyIPs = {
   dev: proxyDev,
   production: '/',
@@ -17,43 +17,7 @@ export const proxyIPs = {
 
 export default {
   dev: {
-    // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
-    '/apiv3': {
-      // 要代理的地址
-      target: proxyIPs.dev,
-      // 配置了这个可以从 http 代理到 https
-      // 依赖 origin 的功能需要 listViewer、imageViewer 共享 cookie
-      changeOrigin: true,
-      secure: false,
-    },
     '/png/': {
-      // 要代理的地址
-      target: proxyIPs.dev,
-      // 配置了这个可以从 http 代理到 https
-      // 依赖 origin 的功能需要 listViewer、imageViewer 共享 cookie
-      changeOrigin: true,
-      secure: false,
-      logLevel: 'debug',
-    },
-    '/bm/': {
-      // 要代理的地址
-      target: proxyIPs.dev,
-      // 配置了这个可以从 http 代理到 https
-      // 依赖 origin 的功能需要 listViewer、imageViewer 共享 cookie
-      changeOrigin: true,
-      secure: false,
-      logLevel: 'debug',
-    },
-    '/oauth': {
-      // 要代理的地址
-      target: proxyIPs.dev,
-      // 配置了这个可以从 http 代理到 https
-      // 依赖 origin 的功能需要 listViewer、imageViewer 共享 cookie
-      changeOrigin: true,
-      secure: false,
-      logLevel: 'debug',
-    },
-    '/orthanc/': {
       // 要代理的地址
       target: proxyIPs.dev,
       // 配置了这个可以从 http 代理到 https
