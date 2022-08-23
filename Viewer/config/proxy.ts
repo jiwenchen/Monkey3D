@@ -17,25 +17,26 @@ export const proxyIPs = {
 
 export default {
   dev: {
-    '/png/': {
-      // 要代理的地址
+    '/volumetype': {
       target: proxyIPs.dev,
-      // 配置了这个可以从 http 代理到 https
-      // 依赖 origin 的功能需要 listViewer、imageViewer 共享 cookie
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
+    '/mprdata': {
+      target: proxyIPs.dev,
       changeOrigin: true,
       secure: false,
       logLevel: 'debug',
     },
   },
-  test: {
-    '/apiv3/': {
-      target: proxyIPs.test || proxyIPs.dev,
+  pre: {
+    '/volumetype': {
+      target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
-  },
-  pre: {
-    '/apiv3/': {
+    '/mprdata': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },

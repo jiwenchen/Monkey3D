@@ -9,7 +9,7 @@ import { enableElement } from '@/common/cornerstone/cornerstoneManager';
 
 const VesselViewport: React.FC<any> = (props) => {
   const { imgId, imageData, dispatch, currentViewPort } = props;
-  const imageInfo = imageData[imgId];
+  const base64Data = imageData[imgId];
   const canvasId = `vesselImage-${imgId}`;
   const elementRef = useRef<any | HTMLDivElement>(null);
 
@@ -31,17 +31,16 @@ const VesselViewport: React.FC<any> = (props) => {
   };
 
   useEffect(() => {
-    if (imageInfo) {
-      const { base64Data } = imageInfo;
+    if (base64Data) {
       enableElement(elementRef.current);
-      const cornerstoneMetaData: any = imgId.includes('vr')
-        ? decodeVR(base64Data, imgId)
-        : decodeMPR(base64Data, imgId);
+      // const cornerstoneMetaData: any = imgId.includes('vr')
+      //   ? decodeVR(base64Data, imgId)
+      //   : decodeMPR(base64Data, imgId);
+      const cornerstoneMetaData: any = decodeMPR(base64Data, imgId);
       cornerstone.displayImage(elementRef.current, cornerstoneMetaData);
       cornerstoneToolsInit();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageInfo]);
+  }, [base64Data]);
 
   return (
     <div

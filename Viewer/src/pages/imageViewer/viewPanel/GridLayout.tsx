@@ -7,12 +7,7 @@ const ReactGridLayout = GridLayout;
 
 const GridLayouts: React.FC<any> = (props) => {
   const { cols, rowHeight, width, layout } = props;
-  const imageID = [
-    'plane_type_vr',
-    'plane_type_coronal',
-    'plane_type_sagittal',
-    'plane_type_axial',
-  ];
+  const imageID = [0, 1, 2];
 
   const [layoutProps] = useState<any>({
     className: 'layout',
