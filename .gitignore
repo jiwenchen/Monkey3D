@@ -4,7 +4,6 @@ __pycache__/
 *$py.class
 
 # C extensions
-*.so
 .idea
 .DS_Store
 
@@ -16,7 +15,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -129,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+.vscode/
+*.mhd
+*.raw
+*.nrrd
+*.nii.gz
+data/*.json
