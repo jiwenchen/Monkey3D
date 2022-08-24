@@ -5,5 +5,5 @@ interface image3DStateType {
 interface viewport3DStateType {
   layout: number[];
   currentViewPort: any;
-  usToolsState: any;
+  currentTool: string;
 }

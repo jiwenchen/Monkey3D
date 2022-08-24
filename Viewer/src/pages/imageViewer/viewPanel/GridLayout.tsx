@@ -7,7 +7,7 @@ const ReactGridLayout = GridLayout;
 
 const GridLayouts: React.FC<any> = (props) => {
   const { cols, rowHeight, width, layout } = props;
-  const imageID = [0, 1, 2];
+  const imageID = ['vr', 0, 1, 2];
 
   const [layoutProps] = useState<any>({
     className: 'layout',
@@ -30,7 +30,7 @@ const GridLayouts: React.FC<any> = (props) => {
           {layout.map((item: any, index: number) => {
             return (
               <div key={item.i}>
-                <VesselViewport imgId={imageID[index] ? imageID[index] : index} />
+                <VesselViewport imgId={imageID[index] !== null ? imageID[index] : index} />
               </div>
             );
           })}

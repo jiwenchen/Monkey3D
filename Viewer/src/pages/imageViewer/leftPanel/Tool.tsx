@@ -1,53 +1,53 @@
 import React from 'react';
 import styles from './Tool.less';
 import type { Dispatch } from '@@/plugin-dva/connect';
-import classNames from 'classnames';
 import { connect } from 'umi';
-import { resetElement } from '@/common/cornerstone/cornerstoneToolsManager';
+import {
+  cornerstoneTools3D,
+  resetElement,
+  resetVr,
+} from '@/common/cornerstone/cornerstoneToolsManager';
 import { Button } from 'antd';
 import Upload from './upload';
 
 interface ImageViewerProps {
   dispatch: Dispatch;
-  usToolsState: any;
   currentViewPort: any;
 }
 
 const Tool: React.FC<ImageViewerProps> = (props) => {
-  const { dispatch, usToolsState, currentViewPort } = props;
+  const { dispatch, currentViewPort } = props;
   const clickHandler = (tool: string) => {
     dispatch({
-      type: 'viewport3DModel/setUsToolsState',
+      type: 'viewport3DModel/setCurrentTool',
       payload: tool,
     });
   };
 
   const handelReset = () => {
-    resetElement(currentViewPort.element);
+    if (currentViewPort?.imgId === 'vr') {
+      resetVr();
+    } else {
+      resetElement(currentViewPort.element);
+    }
   };
 
   return (
     <>
       <Upload />
-      {Object.keys(usToolsState).map((tool) => (
-        <div
-          key={tool}
-          className={classNames(styles.button, {
-            [styles.active]: usToolsState[tool],
-          })}
-          onClick={() => clickHandler(tool)}
-        >
-          {tool}
-        </div>
-      ))}
-      <div className={styles.button} onClick={() => handelReset()}>
-        <Button>reset</Button>
+      <div className={styles.button}>
+        {cornerstoneTools3D[currentViewPort?.imgId === 'vr' ? 'vr' : 'mpr']?.map((tool: string) => (
+          <Button key={tool} onClick={() => clickHandler(tool)}>
+            {tool}
+          </Button>
+        ))}
+        <Button onClick={() => handelReset()}>reset</Button>
       </div>
     </>
   );
 };
 
 export default connect(({ viewport3DModel }: { viewport3DModel: viewport3DStateType }) => {
-  const { usToolsState, currentViewPort } = viewport3DModel;
-  return { usToolsState, currentViewPort };
+  const { currentViewPort } = viewport3DModel;
+  return { currentViewPort };
 })(Tool);

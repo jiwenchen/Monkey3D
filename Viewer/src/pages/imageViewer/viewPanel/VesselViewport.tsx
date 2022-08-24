@@ -1,20 +1,22 @@
 import React, { useEffect, useRef } from 'react';
 import { connect } from 'umi';
 import classnames from 'classnames';
-import { decodeMPR, decodeVR } from '@/utils/decodeImage';
-import * as cornerstone from 'cornerstone-core';
 import styles from './VesselViewport.less';
-import { cornerstoneToolsInit } from '@/common/cornerstone/cornerstoneToolsManager';
-import { enableElement } from '@/common/cornerstone/cornerstoneManager';
+import {
+  initPostPrcsViewport,
+  updateActiveTool,
+  updatePostPrcsViewport,
+} from '@/utils/vesselManager';
 
 const VesselViewport: React.FC<any> = (props) => {
-  const { imgId, imageData, dispatch, currentViewPort } = props;
+  const { imgId, imageData, dispatch, currentViewPort, currentTool } = props;
   const base64Data = imageData[imgId];
   const canvasId = `vesselImage-${imgId}`;
   const elementRef = useRef<any | HTMLDivElement>(null);
 
   useEffect(() => {
-    if (imgId === 'plane_type_vr') {
+    initPostPrcsViewport(elementRef.current, imgId);
+    if (imgId === 'vr') {
       dispatch({
         type: 'viewport3DModel/setViewPortActive',
         payload: { element: elementRef.current },
@@ -32,15 +34,13 @@ const VesselViewport: React.FC<any> = (props) => {
 
   useEffect(() => {
     if (base64Data) {
-      enableElement(elementRef.current);
-      // const cornerstoneMetaData: any = imgId.includes('vr')
-      //   ? decodeVR(base64Data, imgId)
-      //   : decodeMPR(base64Data, imgId);
-      const cornerstoneMetaData: any = decodeMPR(base64Data, imgId);
-      cornerstone.displayImage(elementRef.current, cornerstoneMetaData);
-      cornerstoneToolsInit();
+      updatePostPrcsViewport(elementRef.current, imgId, base64Data);
     }
   }, [base64Data]);
+
+  useEffect(() => {
+    updateActiveTool(elementRef.current, imgId, currentTool);
+  }, [currentTool]);
 
   return (
     <div
@@ -50,6 +50,12 @@ const VesselViewport: React.FC<any> = (props) => {
       })}
       ref={elementRef}
       onClick={(event) => {
+        imgPaneClicked(event, imgId);
+      }}
+      onMouseDown={(event) => {
+        imgPaneClicked(event, imgId);
+      }}
+      onWheel={() => {
         imgPaneClicked(event, imgId);
       }}
     />
@@ -64,7 +70,7 @@ export default connect(
     viewport3DModel: viewport3DStateType;
   }) => {
     const { imageData } = image3DModel;
-    const { currentViewPort } = viewport3DModel;
-    return { imageData, currentViewPort };
+    const { currentViewPort, currentTool } = viewport3DModel;
+    return { imageData, currentViewPort, currentTool };
   },
 )(VesselViewport);
