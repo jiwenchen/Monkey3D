@@ -57,7 +57,7 @@ def set_volume_type(
     vol_type = data.get('vol_type', 0)
     volume["vol_type"] = vol_type
 
-    file_path = f'{sys.path[0]}/../data'
+    file_path = f'{sys.path[0]}/data'
     vol_file = 'cardiac.mhd'
 
     tf = {}
