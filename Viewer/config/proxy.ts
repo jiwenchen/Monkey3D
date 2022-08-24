@@ -6,7 +6,7 @@
  * For details, please see
  * https://pro.ant.design/docs/deploy
  */
-const proxyDev = 'http://192.168.6.41:7788';
+const proxyDev = 'http://192.168.6.41:7799';
 export const proxyIPs = {
   dev: proxyDev,
   production: '/',
@@ -29,6 +29,30 @@ export default {
       secure: false,
       logLevel: 'debug',
     },
+    '/rotatevr': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
+    '/mprbrowse': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
+    '/zoomvr': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
+    '/reset': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
   },
   pre: {
     '/volumetype': {
@@ -37,6 +61,26 @@ export default {
       pathRewrite: { '^': '' },
     },
     '/mprdata': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/rotatevr': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/mprbrowse': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/zoomvr': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/reset': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },

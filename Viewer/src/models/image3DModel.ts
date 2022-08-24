@@ -1,4 +1,11 @@
-import { getMprData, getVolumetype } from '@/services/imageViewer/ImageHttpService';
+import {
+  getMprData,
+  getVolumetype,
+  mprBrowse,
+  resetVr,
+  rotateVr,
+  zoomVr,
+} from '@/services/imageViewer/ImageHttpService';
 import type { Effect, ImmerReducer, Subscription } from 'umi';
 
 interface image3DModelType {
@@ -11,6 +18,7 @@ interface image3DModelType {
   effects: {
     getVolumetype: Effect;
     getMprData: Effect;
+    getVrData: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -37,13 +45,35 @@ const image3DModel: image3DModelType = {
       return result?.message;
     },
     *getMprData({ payload }, { call, put, select }) {
-      const { plane_type } = payload;
-      const result: { data: any; message: boolean } = yield call(getMprData, payload);
+      const { plane_type, delta } = payload;
+      const result: { data: any; message: boolean } = yield call(
+        delta ? mprBrowse : getMprData,
+        payload,
+      );
       if (!result?.data || !result.message) {
-        console.log('request failed');
+        console.error('request failed');
         return;
       }
-      const imageData = { [plane_type]: result.data.image };
+      let imageData = yield select(
+        (state: { image3DModel: { imageData: any } }) => state.image3DModel.imageData,
+      );
+      imageData = { ...imageData, [plane_type]: result.data.image };
+      yield put({ type: 'setImageData', payload: imageData });
+    },
+    *getVrData({ payload }, { call, put, select }) {
+      const { delta, x_angle, y_angle } = payload;
+      const result: { data: any; message: boolean } = yield call(
+        delta ? zoomVr : y_angle && x_angle ? rotateVr : resetVr,
+        payload,
+      );
+      if (!result?.data || !result.message) {
+        console.error('request failed');
+        return;
+      }
+      let imageData = yield select(
+        (state: { image3DModel: { imageData: any } }) => state.image3DModel.imageData,
+      );
+      imageData = { ...imageData, vr: result.data.image };
       yield put({ type: 'setImageData', payload: imageData });
     },
   },
