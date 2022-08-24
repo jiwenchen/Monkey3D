@@ -63,7 +63,7 @@ const image3DModel: image3DModelType = {
     *getVrData({ payload }, { call, put, select }) {
       const { delta, x_angle, y_angle } = payload;
       const result: { data: any; message: boolean } = yield call(
-        delta ? zoomVr : y_angle && x_angle ? rotateVr : resetVr,
+        delta ? zoomVr : y_angle !== null && x_angle !== null ? rotateVr : resetVr,
         payload,
       );
       if (!result?.data || !result.message) {
