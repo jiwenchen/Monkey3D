@@ -29,6 +29,12 @@ export default {
       secure: false,
       logLevel: 'debug',
     },
+    '/vrdata': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
     '/rotatevr': {
       target: proxyIPs.dev,
       changeOrigin: true,
@@ -42,6 +48,12 @@ export default {
       logLevel: 'debug',
     },
     '/zoomvr': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
+    '/wwwl': {
       target: proxyIPs.dev,
       changeOrigin: true,
       secure: false,
@@ -65,6 +77,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
+    '/vrdata': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
     '/rotatevr': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
@@ -76,6 +93,11 @@ export default {
       pathRewrite: { '^': '' },
     },
     '/zoomvr': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/wwwl': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },

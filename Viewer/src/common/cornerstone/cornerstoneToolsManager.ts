@@ -23,8 +23,7 @@ export const resetElement = (element: null | HTMLElement) => {
 
 export const resetVr = () => {
   getDvaApp()._store.dispatch({
-    type: 'image3DModel/getVrData',
-    payload: {},
+    type: 'image3DModel/getRestVr',
   });
 };
 

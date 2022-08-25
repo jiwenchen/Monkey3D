@@ -24,7 +24,6 @@ const ImageViewer: React.FC<ImageViewerProps> = ({}) => {
       if (res === 'successful') {
         dispatch({
           type: 'image3DModel/getVrData',
-          payload: { x_angle: 0, y_angle: 0 },
         });
         [0, 1, 2].forEach((index) => {
           dispatch({

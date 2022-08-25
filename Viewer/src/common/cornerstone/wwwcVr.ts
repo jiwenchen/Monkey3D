@@ -1,6 +1,7 @@
 import csTools from 'cornerstone-tools';
 const BaseTool = csTools.importInternal('base/BaseTool');
 import _ from 'lodash';
+import { getDvaApp } from 'umi';
 /**
  * @public
  * @class WwwcTool
@@ -49,8 +50,10 @@ export default class WwwcVrTool extends BaseTool {
 
     this.configuration.windowWidth += deltaX;
     this.configuration.windowCenter += deltaY;
-
-    // getVrWwwcImage(this.configuration.windowWidth, this.configuration.windowCenter);
+    getDvaApp()._store.dispatch({
+      type: 'image3DModel/getWwwlVr',
+      payload: { ww: this.configuration.windowWidth, wl: this.configuration.windowCenter },
+    });
     return false;
   }
 }

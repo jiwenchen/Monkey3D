@@ -27,6 +27,7 @@ const Tool: React.FC<ImageViewerProps> = (props) => {
   const handelReset = () => {
     if (currentViewPort?.imgId === 'vr') {
       resetVr();
+      resetElement(currentViewPort.element);
     } else {
       resetElement(currentViewPort.element);
     }
