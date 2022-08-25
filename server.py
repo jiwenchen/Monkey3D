@@ -288,6 +288,37 @@ def reset():
         'message': 'successful'
     }
 
+@app.get('/vrdata')
+def get_vr_data():
+    width = 512
+    height = 512
+    b64str = hm.GetVRData_pngString(width, height)
+
+    return {
+        'data': {
+            'image': b64str
+        },
+        'message': 'successful'
+    }
+
+@app.get('/wwwl')
+def set_ww_wl(
+        ww: float,
+        wl: float
+):
+    width = 512
+    height = 512
+    hm.SetVRWWWL(ww, wl)
+    b64str = hm.GetVRData_pngString(width, height)
+
+    return {
+        'data': {
+            'image': b64str
+        },
+        'message': 'successful'
+    }
+
+
 @app.get('/loadtf')
 def loadtf():
     width = 512
