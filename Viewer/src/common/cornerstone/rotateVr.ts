@@ -35,7 +35,7 @@ export default class RotateVrTool extends BaseTool {
       (y && Math.abs(y) > this.configuration.minDelta)
     ) {
       getDvaApp()._store.dispatch({
-        type: 'image3DModel/getVrData',
+        type: 'image3DModel/getRotateVr',
         payload: { x_angle: x, y_angle: y },
       });
     }

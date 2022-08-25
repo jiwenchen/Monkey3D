@@ -1,11 +1,14 @@
 import {
   getMprData,
   getVolumetype,
+  getVrData,
   mprBrowse,
   resetVr,
   rotateVr,
+  wwwlVr,
   zoomVr,
 } from '@/services/imageViewer/ImageHttpService';
+import { setImageData } from '@/utils/vesselManager';
 import type { Effect, ImmerReducer, Subscription } from 'umi';
 
 interface image3DModelType {
@@ -19,6 +22,10 @@ interface image3DModelType {
     getVolumetype: Effect;
     getMprData: Effect;
     getVrData: Effect;
+    getZoomVr: Effect;
+    getRotateVr: Effect;
+    getRestVr: Effect;
+    getWwwlVr: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -60,21 +67,45 @@ const image3DModel: image3DModelType = {
       imageData = { ...imageData, [plane_type]: result.data.image };
       yield put({ type: 'setImageData', payload: imageData });
     },
-    *getVrData({ payload }, { call, put, select }) {
-      const { delta, x_angle, y_angle } = payload;
-      const result: { data: any; message: boolean } = yield call(
-        delta ? zoomVr : y_angle !== undefined && x_angle !== undefined ? rotateVr : resetVr,
-        payload,
-      );
+    *getVrData(_, { call }) {
+      const result: { data: any; message: boolean } = yield call(getVrData);
       if (!result?.data || !result.message) {
         console.error('request failed');
         return;
       }
-      let imageData = yield select(
-        (state: { image3DModel: { imageData: any } }) => state.image3DModel.imageData,
-      );
-      imageData = { ...imageData, vr: result.data.image };
-      yield put({ type: 'setImageData', payload: imageData });
+      setImageData(result.data.image);
+    },
+    *getZoomVr({ payload }, { call }) {
+      const result: { data: any; message: boolean } = yield call(zoomVr, payload);
+      if (!result?.data || !result.message) {
+        console.error('request failed');
+        return;
+      }
+      setImageData(result.data.image);
+    },
+    *getRotateVr({ payload }, { call }) {
+      const result: { data: any; message: boolean } = yield call(rotateVr, payload);
+      if (!result?.data || !result.message) {
+        console.error('request failed');
+        return;
+      }
+      setImageData(result.data.image);
+    },
+    *getRestVr(_, { call }) {
+      const result: { data: any; message: boolean } = yield call(resetVr);
+      if (!result?.data || !result.message) {
+        console.error('request failed');
+        return;
+      }
+      setImageData(result.data.image);
+    },
+    *getWwwlVr({ payload }, { call }) {
+      const result: { data: any; message: boolean } = yield call(wwwlVr, payload);
+      if (!result?.data || !result.message) {
+        console.error('request failed');
+        return;
+      }
+      setImageData(result.data.image);
     },
   },
   subscriptions: {

@@ -3,6 +3,7 @@ import { decodeMPR, decodeVR } from './decodeImage';
 import * as cornerstoneTools from 'cornerstone-tools';
 import { cornerstoneTools3D } from '@/common/cornerstone/cornerstoneToolsManager';
 import { enableElement } from '@/common/cornerstone/cornerstoneManager';
+import { getDvaApp } from 'umi';
 
 export const addToolsForElement = (element: HTMLElement, imgId: string) => {
   const imgType = imgId == 'vr' ? 'vr' : 'mpr';
@@ -47,4 +48,14 @@ export const updatePostPrcsViewport = (element: HTMLElement, imgId: string, base
     imgId == 'vr' ? decodeVR(base64Data, imgId) : decodeMPR(base64Data, imgId);
   cornerstone.displayImage(element, cornerstoneMetaData);
   cornerstone.updateImage(element, true);
+};
+
+export const setImageData = (data: string) => {
+  const dva = getDvaApp()._store;
+  let imageData = dva.getState().image3DModel.imageData;
+  imageData = { ...imageData, vr: data };
+  dva.dispatch({
+    type: 'image3DModel/setImageData',
+    payload: imageData,
+  });
 };
