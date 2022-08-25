@@ -16,7 +16,7 @@ export default class WwwcVrTool extends BaseTool {
       name: 'WwwcVr',
       supportedInteractionTypes: ['Mouse'],
       configuration: {
-        throttleWait: 110,
+        throttleWait: 120,
         windowWidth: undefined, // 记录上次更新数据
         windowCenter: undefined, // 记录上次更新数据
       },
@@ -28,10 +28,6 @@ export default class WwwcVrTool extends BaseTool {
 
   mouseDragCallback(evt: any) {
     this.throttleDragCallback(evt);
-  }
-  mouseUpCallback(evt: any) {
-    this.configuration.windowCenter = undefined;
-    this.configuration.windowWidth = undefined;
   }
 
   throttleDragCallback = _.throttle(this.dragCallback, this.configuration.throttleWait);
