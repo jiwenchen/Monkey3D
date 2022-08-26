@@ -77,6 +77,18 @@ export default {
       secure: false,
       logLevel: 'debug',
     },
+    '/switchvrmip': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
+    '/orientation': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
   },
   pre: {
     '/volumetype': {
@@ -125,6 +137,16 @@ export default {
       pathRewrite: { '^': '' },
     },
     '/rotatech': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/switchvrmip': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/orientation': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },

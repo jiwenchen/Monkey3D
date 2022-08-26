@@ -1,0 +1,333 @@
+@prefixCls: radia-custom-icon;
+@themeColor: #3074f2;
+@font-face {
+  font-family: 'iconfont';
+  src: url('./../../assets/iconfont/iconfont.woff') format('woff'); // 只保留兼容普通浏览器/chrome的字体，如需兼容其它浏览器，如IE需引入.eot,移动端 .ttf ...
+}
+.@{prefixCls} {
+  display: inline-block;
+  font-size: 22px;
+  font-style: normal;
+  line-height: 1;
+  text-align: center;
+  text-transform: none;
+  vertical-align: sub;
+  text-rendering: geometricPrecision;
+
+  &::before {
+    display: block;
+    font-family: 'iconfont' !important;
+  }
+  &&-logo::before {
+    content: '\e7e7';
+  }
+  &&-close::before {
+    content: '\e7d8';
+  }
+  &&-framed-close::before {
+    content: '\e77f';
+  }
+  &&-addHistory::before {
+    content: '\e754';
+  }
+  &&-collect::before {
+    content: '\e739';
+  }
+  &&-retrieve::before {
+    content: '\e7d9';
+  }
+  &&-mergerCheck::before {
+    content: '\e7da';
+  }
+  &&-wind-add::before {
+    content: '\e6dd';
+  }
+  &&-upload::before {
+    content: '\e6dc';
+  }
+  &&-group-title::before {
+    content: '\e7d6';
+  }
+  &&-add-group::before {
+    content: '\e78a';
+  }
+  &&-folder::before {
+    content: '\e7d4';
+  }
+  &&-edit::before {
+    content: '\e6ef';
+  }
+  &&-delete::before {
+    content: '\e6ff';
+  }
+  &&-reset::before {
+    content: '\e6e3';
+  }
+  &&-set::before {
+    content: '\e6d2';
+  }
+  &&-about::before {
+    content: '\e6d6';
+  }
+  &&-search::before {
+    content: '\e6d5';
+  }
+  &&-report-list::before {
+    content: '\e6d3';
+  }
+  &&-wind-width-level::before {
+    content: '\e6e5';
+  }
+  &&-set-font::before {
+    content: '\e71d';
+  }
+  &&-passive-mode::before {
+    content: '\e7dc';
+  }
+  &&-mouse-action::before {
+    content: '\e810';
+  }
+  &&-history::before {
+    content: '\e6d4';
+  }
+  &&-danger::before {
+    content: '\e726';
+  }
+  &&-collect-fill::before {
+    content: '\e738';
+  }
+  &&-down::before {
+    content: '\e6cc';
+  }
+  &&-arrow-left::before {
+    content: '\e6cd';
+  }
+  &&-arrow-right::before {
+    content: '\e6cb';
+  }
+  &&-complete::before {
+    content: '\e6fb';
+  }
+  &&-cancel::before {
+    content: '\e6fd';
+  }
+  &&-download::before {
+    content: '\e763';
+  }
+  &&-loading::before {
+    content: '\e7e9';
+  }
+  &&-arrow-more-right::before {
+    content: '\e7d7';
+  }
+  &&-date::before {
+    content: '\e6d9';
+  }
+  &&-push-back::before {
+    content: '\e7d5';
+  }
+  &&-brain::before {
+    content: '\e740';
+  }
+  &&-mrPerfusion::before {
+    content: '\e7b4';
+  }
+  &&-perfusion::before {
+    content: '\e741';
+  }
+  &&-liver::before {
+    content: '\e809';
+  }
+  &&-lungCancer::before {
+    content: '\e846';
+  }
+  &&-vessel::before {
+    content: '\e73f';
+  }
+  &&-heart::before {
+    content: '\e737';
+  }
+  &&-breast::before {
+    content: '\e69a';
+  }
+  &&-return::before {
+    content: '\e743';
+  }
+  &&-refresh::before {
+    content: '\e6e3';
+  }
+  &&-dicom::before {
+    content: '\e6eb';
+  }
+  &&-dropdown::before {
+    content: '\e6e1';
+  }
+  &&-unfold::before {
+    content: '\e703';
+  }
+  &&-packup::before {
+    content: '\e704';
+  }
+  &&-copy::before {
+    content: '\e74f';
+  }
+  &&-reAnalysis::before {
+    content: '\e74d';
+  }
+  &&-layout::before {
+    content: '\e6e4';
+  }
+  &&-transition::before {
+    content: '\e6e8';
+  }
+  &&-zoom::before {
+    content: '\e705';
+  }
+  &&-wwwc::before {
+    content: '\e6e5';
+  }
+  &&-StackScroll::before {
+    content: '\e7af';
+  }
+  &&-turnpage::before {
+    content: '\e7af';
+  }
+  &&-revertcolor::before {
+    content: '\e6e6';
+  }
+  &&-rotate::before {
+    content: '\e6e9';
+  }
+  &&-lengthtool::before {
+    content: '\e6ea';
+  }
+  &&-Pan::before {
+    content: '\e6e8';
+  }
+  &&-Zoom::before {
+    content: '\e705';
+  }
+  &&-Wwwc::before {
+    content: '\e6e5';
+  }
+  &&-Rotate::before {
+    content: '\e7b5';
+  }
+  &&-Length::before {
+    content: '\e6ea';
+  }
+  &&-Angle::before {
+    content: '\e713';
+  }
+  &&-Probe::before {
+    content: '\e714';
+  }
+  &&-EllipticalRoi::before {
+    content: '\e711';
+  }
+  &&-RectangleRoi::before {
+    content: '\e710';
+  }
+  &&-ArrowAnnotate::before {
+    content: '\e715';
+  }
+  &&-Magnify::before {
+    content: '\e6d5';
+  }
+  &&-printSucces::before {
+    content: '\e7eb';
+  }
+  &&-exportReport::before {
+    content: '\e830';
+  }
+  &&-warning::before {
+    content: '\e827';
+  }
+  &&-hideList::before {
+    content: '\e6f8';
+  }
+  &&-hideIcon::before {
+    content: '\e84e';
+  }
+  &&-recoveryIcon::before {
+    content: '\e7c6';
+  }
+  &&-returnTo::before {
+    content: '\e6ee';
+  }
+  &&-showMask::before {
+    content: '\e70c';
+  }
+  &&-showContour::before {
+    content: '\e843';
+  }
+  &&-Empty::before {
+    content: '\e6ff';
+  }
+  &&-ShowDicomTable::before {
+    content: '\e6eb';
+  }
+  &&-HideDicomInfo::before {
+    content: '\e719';
+  }
+  &&-ShowDicomInfo::before {
+    content: '\e84c';
+  }
+  &&-SyncLocation::before {
+    content: '\e7aa';
+  }
+  &&-SyncIndex::before {
+    content: '\e7a8';
+  }
+  &&-SyncTime::before {
+    content: '\e7a9';
+  }
+  &&-playClip::before {
+    content: '\e708';
+  }
+  &&-keyBoard::before {
+    content: '\e825';
+  }
+  &&-RotateLeft::before {
+    content: '\e716';
+  }
+  &&-RotateRight::before {
+    content: '\e706';
+  }
+  &&-FlipHorizontal::before {
+    content: '\e718';
+  }
+  &&-FlipVertical::before {
+    content: '\e717';
+  }
+  &&-1_1_layout::before {
+    content: '\e7a2';
+  }
+  &&-1_2_layout::before {
+    content: '\e7a3';
+  }
+  &&-2_1_layout::before {
+    content: '\e7a4';
+  }
+  &&-2_2_layout::before {
+    content: '\e7a5';
+  }
+  &&-2_3_layout::before {
+    content: '\e7a6';
+  }
+  &&-3_3_layout::before {
+    content: '\e7a1';
+  }
+  &&-invert::before {
+    content: '\e6e6';
+  }
+  &&-ReferenceLines::before {
+    content: '\e74e';
+  }
+  &&-3D::before {
+    content: '\e778';
+  }
+  &&-orientation::before {
+    content: '\e72b';
+  }
+}

@@ -50,3 +50,13 @@ export async function rotateVr(payload: any) {
   const endpoint = `/rotatevr`;
   return reqGet(endpoint, payload);
 }
+
+export async function switchVrmip(payload: any) {
+  const endpoint = `/switchvrmip`;
+  return reqGet(endpoint, payload);
+}
+
+export async function getOrientation(payload: any) {
+  const endpoint = `/orientation`;
+  return reqGet(endpoint, payload);
+}
