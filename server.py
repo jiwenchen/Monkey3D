@@ -220,16 +220,23 @@ def set_line_index(
         'message': 'successful'
     }
 
+@app.get('/setvrsize')
+def set_vr_size(
+    w: int,
+    h: int
+):
+    b64str = hm.SetVRSize(w, h)
+    return {
+        'message': 'successful'
+    }
 
 @app.get('/rotatevr')
 def rotatevr(
         x_angle: float,
         y_angle: float
 ):
-    width = 512
-    height = 512
     hm.Rotate(x_angle, y_angle)
-    b64str = hm.GetVRData_pngString(width, height)
+    b64str = hm.GetVRData_pngString()
 
     return {
         'data': {
@@ -244,10 +251,8 @@ def pan_vr(
         x_shift: float,
         y_shift: float
 ):
-    width = 512
-    height = 512
     hm.Pan(x_shift, y_shift)
-    b64str = hm.GetVRData_pngString(width, height)
+    b64str = hm.GetVRData_pngString()
 
     return {
         'data': {
@@ -261,11 +266,9 @@ def pan_vr(
 def zoom_vr(
         delta: float
 ):
-    width = 512
-    height = 512
     print(hm.Zoom(delta))
     print(hm.GetZoomRatio())
-    b64str = hm.GetVRData_pngString(width, height)
+    b64str = hm.GetVRData_pngString()
 
     return {
         'data': {
@@ -276,10 +279,8 @@ def zoom_vr(
 
 @app.get('/reset')
 def reset():
-    width = 512
-    height = 512
     hm.Reset()
-    b64str = hm.GetVRData_pngString(width, height)
+    b64str = hm.GetVRData_pngString()
 
     return {
         'data': {
@@ -289,10 +290,9 @@ def reset():
     }
 
 @app.get('/vrdata')
-def get_vr_data():
-    width = 512
-    height = 512
-    b64str = hm.GetVRData_pngString(width, height)
+def get_vr_data(
+):
+    b64str = hm.GetVRData_pngString()
 
     return {
         'data': {
@@ -306,10 +306,8 @@ def set_ww_wl(
         ww: float,
         wl: float
 ):
-    width = 512
-    height = 512
     hm.SetVRWWWL(ww, wl)
-    b64str = hm.GetVRData_pngString(width, height)
+    b64str = hm.GetVRData_pngString()
 
     return {
         'data': {
@@ -321,11 +319,9 @@ def set_ww_wl(
 
 @app.get('/loadtf')
 def loadtf():
-    width = 512
-    height = 512
     hm.LoadTransferFunction(f'{base_path}/trfns/coro.txt')
 
-    b64str = hm.GetVRData_pngString(width, height)
+    b64str = hm.GetVRData_pngString()
 
     return {
         'data': {
@@ -336,11 +332,9 @@ def loadtf():
 
 @app.get('/savetf')
 def savetf():
-    width = 512
-    height = 512
     hm.SaveTransferFunction(f'{base_path}/trfns/test.txt')
     
-    b64str = hm.GetVRData_pngString(width, height)
+    b64str = hm.GetVRData_pngString()
 
     return {
         'data': {
@@ -353,13 +347,11 @@ def savetf():
 def switchvrmip(
     vrmip: bool
 ):
-    width = 512
-    height = 512
     if vrmip:
         hm.EnableVR()
     else:
         hm.EnableMIP()
-    b64str = hm.GetVRData_pngString(width, height)
+    b64str = hm.GetVRData_pngString()
 
     return {
         'data': {
@@ -370,23 +362,22 @@ def switchvrmip(
 
 @app.get('/orientation')
 def orientation(
-    dir: int
+    dir: str
 ):
-    width = 512
-    height = 512
-    if mk.OrientationAnterior == dir:
+    if "A" == dir:
         hm.Anterior()
-    elif mk.OrientationPosterior == dir:
+    elif "P" == dir:
         hm.Posterior()
-    elif mk.OrientationLeft == dir:
+    elif "L" == dir:
         hm.Left()
-    elif mk.OrientationRight == dir:
+    elif "R" == dir:
         hm.Right()
-    elif mk.OrientationHead == dir:
+    elif "S" == dir:
         hm.Head()
-    elif mk.OrientationFoot == dir:
+    elif "I" == dir:
         hm.Foot()
-    b64str = hm.GetVRData_pngString(width, height)
+
+    b64str = hm.GetVRData_pngString()
 
     return {
         'data': {
@@ -400,10 +391,8 @@ def orientation(
 def vrenablecprline(
         enableCPR: bool
 ):
-    width = 512
-    height = 512
     hm.ShowCPRLineInVR(enableCPR)
-    b64str = hm.GetVRData_pngString(width, height)
+    b64str = hm.GetVRData_pngString()
 
     return {
         'data': {
