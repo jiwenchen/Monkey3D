@@ -513,8 +513,8 @@ def update_mpr_type(
 @app.get('/panch')
 def pan_cross_hair(
         plane_type: int,
-        x: int,
-        y:int
+        x: float,
+        y: float
 ):
     hm.PanCrossHair(x, y, mk.PlaneType(plane_type))
 
