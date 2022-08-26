@@ -510,13 +510,24 @@ def update_mpr_type(
         'message': 'successful'
     }
 
-@app.get('/panmpr')
-def pan_mpr(
+@app.get('/panch')
+def pan_cross_hair(
         plane_type: int,
         x: int,
         y:int
 ):
     hm.PanCrossHair(x, y, mk.PlaneType(plane_type))
+
+    return {
+        'message': 'successful'
+    }
+
+@app.get('/rotatech')
+def rotate_cross_hair(
+        plane_type: int,
+        angle: float
+):
+    hm.RotateCrossHair(angle, mk.PlaneType(plane_type))
 
     return {
         'message': 'successful'
