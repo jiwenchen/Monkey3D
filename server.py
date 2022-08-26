@@ -240,7 +240,7 @@ def rotatevr(
 
 
 @app.get('/panvr')
-def panvr(
+def pan_vr(
         x_shift: float,
         y_shift: float
 ):
