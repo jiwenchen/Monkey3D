@@ -22,6 +22,7 @@ import pyMonkeyGL as mk
 app = FastAPI()
 
 hm = mk.HelloMonkey()
+hm.SetLogLevel(mk.LogLevelWarn)
 
 origins = [
     "*"
@@ -407,9 +408,12 @@ def get_mpr_data(
         plane_type: int
 ):
     b64str = hm.GetPlaneData_pngString(mk.PlaneType(plane_type))
+    pt = hm.GetCrossHairPoint(mk.PlaneType(plane_type))
 
     return {
         'data': {
+            "x": pt.x(),
+            "y": pt.y(),
             'image': b64str
         },
         'message': 'successful'
