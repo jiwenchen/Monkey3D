@@ -5,6 +5,7 @@ import ViewportGrid from './viewPanel/ViewportGrid';
 import type { Dispatch } from 'umi';
 import Tool from './leftPanel/Tool';
 import { useDispatch } from 'umi';
+import { getAllMprData } from '@/utils/vesselManager';
 const { Content, Sider } = Layout;
 
 interface ImageViewerProps {
@@ -25,12 +26,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({}) => {
         dispatch({
           type: 'image3DModel/getVrData',
         });
-        [0, 1, 2].forEach((index) => {
-          dispatch({
-            type: 'image3DModel/getMprData',
-            payload: { plane_type: index },
-          });
-        });
+        getAllMprData();
       }
     });
   }, []);

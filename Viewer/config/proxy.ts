@@ -65,6 +65,18 @@ export default {
       secure: false,
       logLevel: 'debug',
     },
+    '/panch': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
+    '/rotatech': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
   },
   pre: {
     '/volumetype': {
@@ -103,6 +115,16 @@ export default {
       pathRewrite: { '^': '' },
     },
     '/reset': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/panch': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/rotatech': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },

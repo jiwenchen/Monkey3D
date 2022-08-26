@@ -4,6 +4,7 @@ import * as cornerstoneTools from 'cornerstone-tools';
 import { cornerstoneTools3D } from '@/common/cornerstone/cornerstoneToolsManager';
 import { enableElement } from '@/common/cornerstone/cornerstoneManager';
 import { getDvaApp } from 'umi';
+import Crosshairs from '@/common/cornerstone/crosshairs';
 
 export const addToolsForElement = (element: HTMLElement, imgId: string) => {
   const imgType = imgId == 'vr' ? 'vr' : 'mpr';
@@ -15,6 +16,8 @@ export const addToolsForElement = (element: HTMLElement, imgId: string) => {
     const toolName = 'StackScroll3dMouseWheel';
     cornerstoneTools.addToolForElement(element, cornerstoneTools[`${toolName}Tool`]);
     cornerstoneTools.setToolActiveForElement(element, toolName, {});
+    const crosshairs = new Crosshairs(imgId);
+    crosshairs._activate(element);
   }
 };
 
@@ -57,5 +60,14 @@ export const setImageData = (data: string) => {
   dva.dispatch({
     type: 'image3DModel/setImageData',
     payload: imageData,
+  });
+};
+
+export const getAllMprData = () => {
+  [0, 1, 2].forEach((index) => {
+    getDvaApp()._store.dispatch({
+      type: 'image3DModel/getMprData',
+      payload: { plane_type: index },
+    });
   });
 };

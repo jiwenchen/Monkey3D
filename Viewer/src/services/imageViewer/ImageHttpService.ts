@@ -20,6 +20,16 @@ export async function getVrData(payload: any) {
   return reqGet(endpoint);
 }
 
+export async function panMpr(payload: any) {
+  const endpoint = `/panch`;
+  return reqGet(endpoint, payload);
+}
+
+export async function rotatech(payload: any) {
+  const endpoint = `/rotatech`;
+  return reqGet(endpoint, payload);
+}
+
 // vr
 export async function zoomVr(payload: any) {
   const endpoint = `/zoomvr`;

@@ -3,7 +3,9 @@ import {
   getVolumetype,
   getVrData,
   mprBrowse,
+  panMpr,
   resetVr,
+  rotatech,
   rotateVr,
   wwwlVr,
   zoomVr,
@@ -21,6 +23,8 @@ interface image3DModelType {
   effects: {
     getVolumetype: Effect;
     getMprData: Effect;
+    panMpr: Effect;
+    rotatech: Effect;
     getVrData: Effect;
     getZoomVr: Effect;
     getRotateVr: Effect;
@@ -66,6 +70,12 @@ const image3DModel: image3DModelType = {
       );
       imageData = { ...imageData, [plane_type]: result.data.image };
       yield put({ type: 'setImageData', payload: imageData });
+    },
+    *panMpr({ payload }, { call }) {
+      yield call(panMpr, payload);
+    },
+    *rotatech({ payload }, { call }) {
+      yield call(rotatech, payload);
     },
     *getVrData(_, { call }) {
       const result: { data: any; message: boolean } = yield call(getVrData);
