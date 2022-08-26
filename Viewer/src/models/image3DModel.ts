@@ -1,5 +1,6 @@
 import {
   getMprData,
+  getOrientation,
   getVolumetype,
   getVrData,
   mprBrowse,
@@ -7,6 +8,7 @@ import {
   resetVr,
   rotatech,
   rotateVr,
+  switchVrmip,
   wwwlVr,
   zoomVr,
 } from '@/services/imageViewer/ImageHttpService';
@@ -30,6 +32,8 @@ interface image3DModelType {
     getRotateVr: Effect;
     getRestVr: Effect;
     getWwwlVr: Effect;
+    switchVrmip: Effect;
+    orientation: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -111,6 +115,22 @@ const image3DModel: image3DModelType = {
     },
     *getWwwlVr({ payload }, { call }) {
       const result: { data: any; message: boolean } = yield call(wwwlVr, payload);
+      if (!result?.data || !result.message) {
+        console.error('request failed');
+        return;
+      }
+      setImageData(result.data.image);
+    },
+    *switchVrmip({ payload }, { call }) {
+      const result: { data: any; message: boolean } = yield call(switchVrmip, payload);
+      if (!result?.data || !result.message) {
+        console.error('request failed');
+        return;
+      }
+      setImageData(result.data.image);
+    },
+    *orientation({ payload }, { call }) {
+      const result: { data: any; message: boolean } = yield call(getOrientation, payload);
       if (!result?.data || !result.message) {
         console.error('request failed');
         return;

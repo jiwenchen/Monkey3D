@@ -1,0 +1,75 @@
+.dicomstyle(@type:none) {
+  position: absolute;
+  box-sizing: border-box;
+  color: #fff;
+  font-size: 14px;
+  opacity: 0.8;
+  pointer-events: @type;
+}
+
+.directionlist {
+  display: flex;
+  flex: 1 1;
+  flex-flow: row nowrap;
+  .them {
+    box-sizing: border-box;
+    padding: 0 8px;
+    color: #fff;
+    font-size: 12px;
+    border-right: 1px solid #2e3e4d;
+    cursor: pointer;
+    &:hover {
+      background: #3074f2;
+    }
+  }
+}
+
+.handle {
+  top: 45%;
+  left: 16px;
+  display: flex;
+  flex-flow: column wrap;
+  width: 30px;
+  text-align: center;
+  .dicomstyle(auto);
+  .handleSpan {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 2px;
+    line-height: 30px;
+    background: #000;
+    border: 1px solid #3d5973;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .active {
+    background: #3074f2 !important;
+  }
+}
+
+.opactionBox {
+  bottom: 12px;
+  left: 16px;
+  width: 24px;
+  height: auto;
+  .dicomstyle(auto);
+  .directionIcon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-color: #2a3c4d;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
+
+:global {
+  .ant-popover-inner-content {
+    box-sizing: border-box;
+    height: 26px;
+    padding: 0 1px !important;
+    line-height: 26px;
+    background: #293b4d;
+  }
+}

@@ -7,6 +7,7 @@ import {
   updateActiveTool,
   updatePostPrcsViewport,
 } from '@/utils/vesselManager';
+import Operation3D from '@/pages/imageViewer/components/Operation3D';
 
 const VesselViewport: React.FC<any> = (props) => {
   const { imgId, imageData, dispatch, currentViewPort, currentTool } = props;
@@ -43,22 +44,25 @@ const VesselViewport: React.FC<any> = (props) => {
   }, [currentTool]);
 
   return (
-    <div
-      id={canvasId}
-      className={classnames('vessel-cornerstone-image', styles.box, {
-        [styles.focused]: currentViewPort.imgId === imgId,
-      })}
-      ref={elementRef}
-      onClick={(event) => {
-        imgPaneClicked(event, imgId);
-      }}
-      onMouseDown={(event) => {
-        imgPaneClicked(event, imgId);
-      }}
-      onWheel={() => {
-        imgPaneClicked(event, imgId);
-      }}
-    />
+    <>
+      <div
+        id={canvasId}
+        className={classnames('vessel-cornerstone-image', styles.box, {
+          [styles.focused]: currentViewPort.imgId === imgId,
+        })}
+        ref={elementRef}
+        onClick={(event) => {
+          imgPaneClicked(event, imgId);
+        }}
+        onMouseDown={(event) => {
+          imgPaneClicked(event, imgId);
+        }}
+        onWheel={() => {
+          imgPaneClicked(event, imgId);
+        }}
+      />
+      {imgId === 'vr' && <Operation3D />}
+    </>
   );
 };
 export default connect(
