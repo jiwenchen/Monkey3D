@@ -16,7 +16,11 @@ export const addToolsForElement = (element: HTMLElement, imgId: string) => {
     const toolName = 'StackScroll3dMouseWheel';
     cornerstoneTools.addToolForElement(element, cornerstoneTools[`${toolName}Tool`]);
     cornerstoneTools.setToolActiveForElement(element, toolName, {});
-    const crosshairs = new Crosshairs(imgId);
+    const crosshairs = new Crosshairs(imgId, element);
+    getDvaApp()._store.dispatch({
+      type: 'viewport3DModel/setCrosshairsManager',
+      payload: { crosshairs },
+    });
     crosshairs._activate(element);
   }
 };
@@ -63,11 +67,27 @@ export const setImageData = (data: string) => {
   });
 };
 
-export const getAllMprData = () => {
+export const getAllMprData = (status?: boolean, evt?: any, operation?: any) => {
   [0, 1, 2].forEach((index) => {
-    getDvaApp()._store.dispatch({
-      type: 'image3DModel/getMprData',
-      payload: { plane_type: index },
-    });
+    getDvaApp()
+      ._store.dispatch({
+        type: 'image3DModel/getMprData',
+        payload: { plane_type: index },
+      })
+      .then((res: any) => {
+        if (status) return;
+        activateCrossharis(res, index, evt, operation);
+      });
   });
+};
+
+export const activateCrossharis = (point: any, id: number, evt: any, operation: any) => {
+  const dva = getDvaApp()._store;
+  const crosshairsManager = dva.getState().viewport3DModel.crosshairsManager;
+  crosshairsManager[id].crosshairsPoint = point;
+  if (operation === 1) {
+    crosshairsManager[id]._dragCrosshairs(evt);
+  } else {
+    crosshairsManager[id]._rotateCrosshairs(evt);
+  }
 };

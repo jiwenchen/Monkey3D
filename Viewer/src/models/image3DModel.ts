@@ -74,6 +74,7 @@ const image3DModel: image3DModelType = {
       );
       imageData = { ...imageData, [plane_type]: result.data.image };
       yield put({ type: 'setImageData', payload: imageData });
+      return { x: result.data.x, y: result.data.y };
     },
     *panMpr({ payload }, { call }) {
       yield call(panMpr, payload);

@@ -24,19 +24,21 @@ const POINTRADIUS = 5;
 const LINEWIDTH = 1;
 const ACTIVELINEWIDTH = 2.5;
 const NEARLINEDISTANCE = 2.5;
-const THROTTLEWAIT = 110;
+const THROTTLEWAIT = 150;
 
 export default class Crosshairs {
   activeOperation: number | null;
   crosshairsPoint: { x: number; y: number } | null;
   imgId: string;
+  element: HTMLElement;
   angle: number;
   activeTool: string | undefined;
   activeLineType: string | undefined;
   horizontalLine: any | null;
   verticalLine: any | null;
-  constructor(imgId: string) {
+  constructor(imgId: string, element: HTMLElement) {
     this.imgId = imgId;
+    this.element = element;
     this.crosshairsPoint = null;
     this.activeOperation = null;
     this.angle = 0;
@@ -87,7 +89,9 @@ export default class Crosshairs {
   initCrosshairsData(evt: any) {
     const { image } = evt.detail;
     const { width: imgWidth, height: imgHeight } = image;
-    this.crosshairsPoint = { x: imgWidth / 2, y: imgHeight / 2 };
+    this.crosshairsPoint = this.crosshairsPoint
+      ? this.crosshairsPoint
+      : { x: imgWidth / 2, y: imgHeight / 2 };
     this.horizontalLine = [
       {
         start: { x: 0, y: this.crosshairsPoint!.y },
@@ -163,7 +167,7 @@ export default class Crosshairs {
   }
   _mouseDragCallback = _.throttle(this._dragCallback, THROTTLEWAIT);
   _dragCallback(evt: any) {
-    const { image, element, currentPoints, deltaPoints, lastPoints } = evt.detail;
+    const { image, element, currentPoints, deltaPoints, startPoints, viewport } = evt.detail;
     if (deltaPoints.image.x === 0 && deltaPoints.image.y === 0) return false;
     if (this.activeOperation === null) return false;
     if (this.activeOperation === OPERATION.DRAG) {
@@ -175,7 +179,6 @@ export default class Crosshairs {
       // update reference lines
       this._dragCrosshairs(evt);
       // update image
-      // getCrosshairsDrag(this.imgId, currentPoints.image);
       getDvaApp()._store.dispatch({
         type: 'image3DModel/panMpr',
         payload: {
@@ -184,21 +187,23 @@ export default class Crosshairs {
           y: currentPoints.image.y,
         },
       });
-      getAllMprData();
+      getAllMprData(false, evt, OPERATION.DRAG);
     } else if (this.activeOperation === OPERATION.ROTATE) {
       // update reference lines
       this._rotateCrosshairs(evt);
+      const rect = element.getBoundingClientRect(element);
+      const { clientWidth: width, clientHeight: height } = element;
+      const { scale, translation } = viewport;
+      const centerPoints = {
+        x: rect.left + width / 2 + translation.x * scale,
+        y: rect.top + height / 2 + translation.y * scale,
+      };
       // update image
-      const angleInfo = angleBetweenPoints(
-        this.crosshairsPoint,
-        lastPoints.client,
-        currentPoints.client,
-      );
+      const angleInfo = angleBetweenPoints(centerPoints, startPoints.client, currentPoints.client);
       if (angleInfo.direction < 0) {
         angleInfo.angle = -angleInfo.angle;
       }
       this.angle = angleInfo.angle;
-      // getCrosshairsRotate(this.imgId, angleInfo.angle);
       getDvaApp()._store.dispatch({
         type: 'image3DModel/rotatech',
         payload: {
@@ -206,7 +211,7 @@ export default class Crosshairs {
           angle: angleInfo.angle,
         },
       });
-      getAllMprData();
+      getAllMprData(false, evt, OPERATION.ROTATE);
     }
     cornerstone.updateImage(element, true);
     return false;
@@ -496,9 +501,9 @@ function findIntersectionPointsCircleLine(
   return points;
 }
 function distanceBetweenPoints(from: { x: number; y: number }, to: { x: number; y: number }) {
-  const distance = Math.sqrt(Math.pow(from.x - to.x, 2) + Math.pow(from.y - to.y, 2));
-  return distance;
+  return Math.sqrt(Math.pow(from.x - to.x, 2) + Math.pow(from.y - to.y, 2));
 }
+
 function getVerticalLineEquation(baseline: { slope: number }, basePoint: { x: number; y: number }) {
   let slope, axis;
   if (baseline.slope === 0) slope = Infinity;

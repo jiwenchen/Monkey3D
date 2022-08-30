@@ -156,6 +156,7 @@
   function decodeBm(buffer, params, tags, imageId) {
     let {
       signed,
+      depth,
       width,
       height,
       invert = 1,
@@ -164,7 +165,7 @@
       pixel_spacing_y = 1,
       window_center,
       window_width,
-      rescale_intercept = 1,
+      rescale_intercept = 0,
       rescale_slope = 1,
     } = params;
     let pixelArray = pako.inflate(buffer);
@@ -209,8 +210,13 @@
         pixelArray = new Int16Array(pixelArray.buffer);
         pixelBufferFormat = "Int16";
       } else {
-        pixelArray = new Uint16Array(pixelArray.buffer);
-        pixelBufferFormat = "Uint16";
+        if(depth === 32){
+          pixelArray = new Uint32Array(pixelArray.buffer);
+          pixelBufferFormat = "Uint32";
+        }else{
+          pixelArray = new Uint16Array(pixelArray.buffer);
+          pixelBufferFormat = "Uint16";
+        }
       }
     }
     if ([1, 2, 7, 9].includes(format)) {

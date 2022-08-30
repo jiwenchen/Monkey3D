@@ -6,4 +6,5 @@ interface viewport3DStateType {
   layout: number[];
   currentViewPort: any;
   currentTool: string;
+  crosshairsManager: any;
 }
