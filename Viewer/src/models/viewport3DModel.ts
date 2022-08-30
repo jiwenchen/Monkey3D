@@ -8,6 +8,7 @@ interface viewport3DModelType {
     setLayout: ImmerReducer<viewport3DStateType>;
     setViewPortActive: ImmerReducer<viewport3DStateType>;
     setCurrentTool: ImmerReducer<viewport3DStateType>;
+    setCrosshairsManager: ImmerReducer<viewport3DStateType>;
   };
   subscriptions: {
     setup: Subscription;
@@ -18,6 +19,11 @@ const viewport3DModelState = () => ({
   currentViewPort: { imgId: 'vr' },
   layout: [2, 2],
   currentTool: '',
+  crosshairsManager: {
+    0: null,
+    1: null,
+    2: null,
+  },
 });
 
 const viewport3DModel: viewport3DModelType = {
@@ -35,6 +41,11 @@ const viewport3DModel: viewport3DModelType = {
     },
     setCurrentTool(state, action) {
       state.currentTool = action.payload;
+    },
+    setCrosshairsManager(state: viewport3DStateType, { payload: { crosshairs } }) {
+      const obj = {};
+      obj[crosshairs.imgId] = crosshairs;
+      return { ...state, crosshairsManager: { ...state.crosshairsManager, ...obj } };
     },
   },
   subscriptions: {

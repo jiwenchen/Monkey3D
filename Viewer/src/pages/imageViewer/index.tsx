@@ -24,9 +24,10 @@ const ImageViewer: React.FC<ImageViewerProps> = ({}) => {
     }).then((res: string) => {
       if (res === 'successful') {
         dispatch({
-          type: 'image3DModel/getVrData',
+          type: 'image3DModel/switchVrmip',
+          payload: { vrmip: true },
         });
-        getAllMprData();
+        getAllMprData(true);
       }
     });
   }, []);
