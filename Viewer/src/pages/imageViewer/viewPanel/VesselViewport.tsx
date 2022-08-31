@@ -8,6 +8,7 @@ import {
   updatePostPrcsViewport,
 } from '@/utils/vesselManager';
 import Operation3D from '@/pages/imageViewer/components/Operation3D';
+import mprOperateLine from '@/common/cornerstone/mprOperateLine';
 
 const VesselViewport: React.FC<any> = (props) => {
   const { imgId, imageData, dispatch, currentViewPort, currentTool } = props;
@@ -36,8 +37,23 @@ const VesselViewport: React.FC<any> = (props) => {
   useEffect(() => {
     if (base64Data) {
       updatePostPrcsViewport(elementRef.current, imgId, base64Data);
+      if (imgId !== 'vr') {
+        mprOperateLine.active(elementRef.current, revertName(imgId));
+      }
     }
   }, [base64Data]);
+
+  const revertName = (imgId: number) => {
+    let name = 'Axial';
+    if (imgId === 0) {
+      name = 'Axial';
+    } else if (imgId === 1) {
+      name = 'Coronal';
+    } else {
+      name = 'Sagittal';
+    }
+    return name;
+  };
 
   useEffect(() => {
     updateActiveTool(elementRef.current, imgId, currentTool);
