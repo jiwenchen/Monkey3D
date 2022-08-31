@@ -33,6 +33,10 @@ const Tool: React.FC<ImageViewerProps> = (props) => {
     }
   };
 
+  const openEcharts = () => {
+    return <></>;
+  };
+
   return (
     <>
       <Upload />
@@ -43,6 +47,7 @@ const Tool: React.FC<ImageViewerProps> = (props) => {
           </Button>
         ))}
         <Button onClick={() => handelReset()}>reset</Button>
+        <Button onClick={() => openEcharts()}>echarts</Button>
       </div>
     </>
   );
