@@ -3,12 +3,15 @@ import { connect } from 'umi';
 import classnames from 'classnames';
 import styles from './VesselViewport.less';
 import {
+  getAllMprData,
   initPostPrcsViewport,
+  revertName,
   updateActiveTool,
   updatePostPrcsViewport,
 } from '@/utils/vesselManager';
 import Operation3D from '@/pages/imageViewer/components/Operation3D';
 import mprOperateLine from '@/common/cornerstone/mprOperateLine';
+import _ from 'lodash';
 
 const VesselViewport: React.FC<any> = (props) => {
   const { imgId, imageData, dispatch, currentViewPort, currentTool } = props;
@@ -24,10 +27,23 @@ const VesselViewport: React.FC<any> = (props) => {
         payload: { element: elementRef.current },
       });
     }
+    elementRef.current?.removeEventListener(
+      'CornerstoneToolsMprOperatePositionModified',
+      manuallyModifyCoordinates,
+    );
+    elementRef.current?.addEventListener(
+      'CornerstoneToolsMprOperatePositionModified',
+      manuallyModifyCoordinates,
+    );
+    return () =>
+      elementRef.current?.removeEventListener(
+        'CornerstoneToolsMprOperatePositionModified',
+        manuallyModifyCoordinates,
+      );
   }, []);
 
   const imgPaneClicked = (event: any, id: string) => {
-    event.preventDefault();
+    // event.preventDefault();
     dispatch({
       type: 'viewport3DModel/setViewPortActive',
       payload: { imgId: id, element: elementRef.current },
@@ -37,23 +53,32 @@ const VesselViewport: React.FC<any> = (props) => {
   useEffect(() => {
     if (base64Data) {
       updatePostPrcsViewport(elementRef.current, imgId, base64Data);
-      if (imgId !== 'vr') {
+      const length = Object.keys(imageData).filter((i) => i !== 'vr').length;
+      // 防止重复渲染十字线
+      if (imgId !== 'vr' && mprOperateLine.mprOperateLines.length < length) {
         mprOperateLine.active(elementRef.current, revertName(imgId));
       }
     }
   }, [base64Data]);
 
-  const revertName = (imgId: number) => {
-    let name = 'Axial';
-    if (imgId === 0) {
-      name = 'Axial';
-    } else if (imgId === 1) {
-      name = 'Coronal';
-    } else {
-      name = 'Sagittal';
+  const manuallyModifyCoordinates = _.throttle((e: any) => {
+    const { imagePoint, changeType, sliceType } = e.detail;
+    if (
+      changeType === 'centerRect' ||
+      changeType === 'horizontalLine' ||
+      changeType === 'verticalLine'
+    ) {
+      dispatch({
+        type: 'image3DModel/panMpr',
+        payload: {
+          plane_type: imgId,
+          x: imagePoint.x,
+          y: imagePoint.y,
+        },
+      });
+      getAllMprData(sliceType);
     }
-    return name;
-  };
+  }, 100);
 
   useEffect(() => {
     updateActiveTool(elementRef.current, imgId, currentTool);
@@ -73,7 +98,7 @@ const VesselViewport: React.FC<any> = (props) => {
         onMouseDown={(event) => {
           imgPaneClicked(event, imgId);
         }}
-        onWheel={() => {
+        onWheel={(event) => {
           imgPaneClicked(event, imgId);
         }}
       />

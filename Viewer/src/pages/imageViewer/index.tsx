@@ -27,7 +27,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({}) => {
           type: 'image3DModel/switchVrmip',
           payload: { vrmip: true },
         });
-        getAllMprData(true);
+        getAllMprData();
       }
     });
   }, []);
