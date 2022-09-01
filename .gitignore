@@ -134,3 +134,4 @@ dmypy.json
 *.nrrd
 *.nii.gz
 data/*.json
+MonkeyGL/
