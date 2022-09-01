@@ -4,7 +4,7 @@ import * as cornerstoneTools from 'cornerstone-tools';
 import { cornerstoneTools3D } from '@/common/cornerstone/cornerstoneToolsManager';
 import { enableElement } from '@/common/cornerstone/cornerstoneManager';
 import { getDvaApp } from 'umi';
-// import Crosshairs from '@/common/cornerstone/crosshairs';
+import mprOperateLine from '@/common/cornerstone/mprOperateLine';
 
 export const addToolsForElement = (element: HTMLElement, imgId: string) => {
   const imgType = imgId == 'vr' ? 'vr' : 'mpr';
@@ -16,12 +16,6 @@ export const addToolsForElement = (element: HTMLElement, imgId: string) => {
     const toolName = 'StackScroll3dMouseWheel';
     cornerstoneTools.addToolForElement(element, cornerstoneTools[`${toolName}Tool`]);
     cornerstoneTools.setToolActiveForElement(element, toolName, {});
-    // const crosshairs = new Crosshairs(imgId, element);
-    // getDvaApp()._store.dispatch({
-    //   type: 'viewport3DModel/setCrosshairsManager',
-    //   payload: { crosshairs },
-    // });
-    // crosshairs._activate(element);
   }
 };
 
@@ -67,27 +61,43 @@ export const setImageData = (data: string) => {
   });
 };
 
-export const getAllMprData = (status?: boolean, evt?: any, operation?: any) => {
-  [0, 1, 2].forEach((index) => {
+export const getAllMprData = (sliceType?: string) => {
+  let data = [0, 1, 2];
+  if (sliceType) {
+    data = data.filter((i: number) => i !== revertNumber(sliceType));
+  }
+  data.forEach((num) => {
     getDvaApp()
       ._store.dispatch({
         type: 'image3DModel/getMprData',
-        payload: { plane_type: index },
+        payload: { plane_type: num },
       })
       .then((res: any) => {
-        if (status) return;
-        activateCrossharis(res, index, evt, operation);
+        mprOperateLine.setMprOperateLinePos(revertName(num), res);
       });
   });
 };
 
-export const activateCrossharis = (point: any, id: number, evt: any, operation: any) => {
-  const dva = getDvaApp()._store;
-  const crosshairsManager = dva.getState().viewport3DModel.crosshairsManager;
-  crosshairsManager[id].crosshairsPoint = point;
-  if (operation === 1) {
-    crosshairsManager[id]._dragCrosshairs(evt);
+export const revertName = (imgId: number) => {
+  let name = 'Axial';
+  if (imgId === 0) {
+    name = 'Axial';
+  } else if (imgId === 1) {
+    name = 'Sagittal';
   } else {
-    crosshairsManager[id]._rotateCrosshairs(evt);
+    name = 'Coronal';
   }
+  return name;
+};
+
+export const revertNumber = (sliceType: string) => {
+  let number = 0;
+  if (sliceType === 'Axial') {
+    number = 0;
+  } else if (sliceType === 'Sagittal') {
+    number = 1;
+  } else {
+    number = 2;
+  }
+  return number;
 };

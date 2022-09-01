@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import * as cornerstone from 'cornerstone-core';
 import * as cornerstoneTools from 'cornerstone-tools';
 
@@ -1582,11 +1583,18 @@ class MprOperateLine {
     return this.sliceType;
   }
 
-  setOperateLinePos(changeType: string, index: number) {
+  setOperateLinePos(coordinate?: any, changeType?: string, index?: number) {
+    if (coordinate && !_.isEmpty(coordinate)) {
+      this.centerCircle.imagePoint = coordinate;
+      this.centerCircle.point = cornerstone.pixelToCanvas(
+        this.element,
+        this.centerCircle.imagePoint,
+      );
+      return;
+    }
     if (changeType === 'horizontalLine') {
       this.centerCircle.imagePoint.y = index;
     }
-
     if (changeType === 'verticalLine') {
       this.centerCircle.imagePoint.x = index;
     }
@@ -1683,7 +1691,7 @@ class MprOperateLine {
     cornerstone.updateImage(this.element);
   }
 }
-
+//************************************************************************************************************************
 // wxl 左上角X坐标
 // wxr 右下角X坐标
 // wyt 右上角Y坐标
@@ -1794,16 +1802,20 @@ function active(element: HTMLElement, info: string) {
   mprOperateLines.push(operateLine);
 }
 
-function setMprOperateLinePos(sliceType: string, changeType: string, index: number) {
-  let operateLine = null;
-  for (let line of mprOperateLines) {
-    if (line.getSliceType() === sliceType) {
-      operateLine = line;
-      break;
-    }
-  }
+function setMprOperateLinePos(
+  sliceType: string,
+  coordinate?: { x: number; y: number },
+  changeType?: string,
+  index?: number,
+) {
+  const operateLine = mprOperateLines.find((line: any) => line.getSliceType() === sliceType);
   if (operateLine) {
     let operateLinePos = operateLine.getOperateLinePos();
+    if (coordinate) {
+      operateLine.setOperateLinePos(coordinate);
+      operateLine._onResize();
+      return;
+    }
     if (changeType === 'horizontalLine') {
       if (operateLinePos.y === index) {
         return;
@@ -1826,11 +1838,13 @@ function deleteOperateLine(element: HTMLElement) {
     }
   }
 }
+
 const mprOperateLine = {
   active: active,
   passive: passive,
   setMprOperateLinePos,
   deleteOperateLine,
+  mprOperateLines: mprOperateLines,
 };
 
 export default mprOperateLine;
