@@ -8,7 +8,8 @@ import {
   resetVr,
   rotatech,
   rotateVr,
-  switchVrmip,
+  setRenderType,
+  setVrSize,
   wwwlVr,
   zoomVr,
 } from '@/services/imageViewer/ImageHttpService';
@@ -32,8 +33,9 @@ interface image3DModelType {
     getRotateVr: Effect;
     getRestVr: Effect;
     getWwwlVr: Effect;
-    switchVrmip: Effect;
+    setRenderType: Effect;
     orientation: Effect;
+    setVrSize: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -122,8 +124,8 @@ const image3DModel: image3DModelType = {
       }
       setImageData(result.data.image);
     },
-    *switchVrmip({ payload }, { call }) {
-      const result: { data: any; message: boolean } = yield call(switchVrmip, payload);
+    *setRenderType({ payload }, { call }) {
+      const result: { data: any; message: boolean } = yield call(setRenderType, payload);
       if (!result?.data || !result.message) {
         console.error('request failed');
         return;
@@ -137,6 +139,9 @@ const image3DModel: image3DModelType = {
         return;
       }
       setImageData(result.data.image);
+    },
+    *setVrSize({ payload }, { call }) {
+      yield call(setVrSize, payload);
     },
   },
   subscriptions: {

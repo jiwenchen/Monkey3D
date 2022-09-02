@@ -4,13 +4,14 @@ import styles from '@/pages/imageViewer/components/Operation3D.less';
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { useDispatch } from 'umi';
+import { revertDataName } from '@/utils/vesselManager';
 
 const Operation3D: React.FC = () => {
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const [renderType3D, setRenderType3D] = useState('VR');
   const listOrients = ['anterior', 'posterior', 'left', 'right', 'superior', 'inferior'];
-  const VrMipArr = ['VR', 'MIP'];
+  const VrMipArr = ['VR', 'MIP', 'SR'];
 
   const handChange = (newVisible: boolean) => {
     setVisible(newVisible);
@@ -26,8 +27,8 @@ const Operation3D: React.FC = () => {
   const change3Dtype = (res: any) => {
     setRenderType3D(res);
     dispatch({
-      type: 'image3DModel/switchVrmip',
-      payload: { vrmip: res.includes('VR') },
+      type: 'image3DModel/setRenderType',
+      payload: { type: revertDataName(res) }, //0:vr,1:mip,2:surface
     });
   };
   const content = () => {

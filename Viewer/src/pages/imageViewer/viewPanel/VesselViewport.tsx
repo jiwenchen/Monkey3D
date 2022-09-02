@@ -26,6 +26,12 @@ const VesselViewport: React.FC<any> = (props) => {
         type: 'viewport3DModel/setViewPortActive',
         payload: { element: elementRef.current },
       });
+      const width = elementRef.current.clientWidth;
+      const height = elementRef.current.clientHeight;
+      dispatch({
+        type: 'image3DModel/setVrSize',
+        payload: { w: width, h: height },
+      });
     }
     elementRef.current?.removeEventListener(
       'CornerstoneToolsMprOperatePositionModified',
@@ -62,7 +68,8 @@ const VesselViewport: React.FC<any> = (props) => {
   }, [base64Data]);
 
   const manuallyModifyCoordinates = _.throttle((e: any) => {
-    const { imagePoint, changeType, sliceType } = e.detail;
+    const { imagePoint, changeType, sliceType, lastAngle } = e.detail;
+    console.log(lastAngle, 99999);
     if (
       changeType === 'centerRect' ||
       changeType === 'horizontalLine' ||
@@ -76,9 +83,17 @@ const VesselViewport: React.FC<any> = (props) => {
           y: imagePoint.y,
         },
       });
-      getAllMprData(sliceType);
+    } else if (changeType.includes('Rotate')) {
+      dispatch({
+        type: 'image3DModel/rotatech',
+        payload: {
+          plane_type: imgId,
+          angle: lastAngle,
+        },
+      });
     }
-  }, 100);
+    getAllMprData(sliceType);
+  }, 200);
 
   useEffect(() => {
     updateActiveTool(elementRef.current, imgId, currentTool);
