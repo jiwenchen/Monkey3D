@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { getDvaApp } from 'umi';
 import cornerstone from 'cornerstone-core';
 import csTools from 'cornerstone-tools';
-import { getAllMprData } from '@/utils/vesselManager';
 const getNewContext = csTools.importInternal('drawing/getNewContext');
 const draw = csTools.importInternal('drawing/draw');
 const drawLines = csTools.importInternal('drawing/drawLines');
@@ -187,7 +186,6 @@ export default class Crosshairs {
           y: currentPoints.image.y,
         },
       });
-      getAllMprData(false, evt, OPERATION.DRAG);
     } else if (this.activeOperation === OPERATION.ROTATE) {
       // update reference lines
       this._rotateCrosshairs(evt);
@@ -211,7 +209,6 @@ export default class Crosshairs {
           angle: angleInfo.angle,
         },
       });
-      getAllMprData(false, evt, OPERATION.ROTATE);
     }
     cornerstone.updateImage(element, true);
     return false;

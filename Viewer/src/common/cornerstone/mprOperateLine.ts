@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import * as cornerstone from 'cornerstone-core';
 import * as cornerstoneTools from 'cornerstone-tools';
+const angleBetweenPoints = cornerstoneTools.importInternal('util/angleBetweenPoints');
 
 let mprOperateLines: any = [];
 
@@ -22,6 +23,7 @@ class MprOperateLine {
   public rotateMode: boolean;
   public element: any;
   public centerSpacing: number;
+  public lastAngle: number;
   constructor(type: string) {
     this.sliceType = type;
     this.horizontalLine = {};
@@ -40,6 +42,7 @@ class MprOperateLine {
     this.rotateMode = true;
     this.element = null;
     this.centerSpacing = 10;
+    this.lastAngle = 0;
     this._onImageRendered = this._onImageRendered.bind(this);
     this._mouseMoveCallback = this._mouseMoveCallback.bind(this);
     this._mouseDownCallback = this._mouseDownCallback.bind(this);
@@ -409,6 +412,7 @@ class MprOperateLine {
 
     function mouseDragCallback(e: any) {
       const eventData = e.detail;
+      const { startPoints, currentPoints, viewport } = eventData;
       if (lineType === 'horizontalLine') {
         obj.horizontalLine.active = true;
         if (
@@ -774,11 +778,22 @@ class MprOperateLine {
         return false;
       }
       let eventType = 'CornerstoneToolsMprOperatePositionModified';
+      const rect = element.getBoundingClientRect(element);
+      const { scale, translation } = viewport;
+      const centerPoints = {
+        x: rect.left + width / 2 + translation.x * scale,
+        y: rect.top + height / 2 + translation.y * scale,
+      };
+      const angleInfo = angleBetweenPoints(centerPoints, startPoints.client, currentPoints.client);
+      if (angleInfo.direction < 0) {
+        angleInfo.angle = -angleInfo.angle;
+      }
       let modifiedEventData = {
         changeType: lineType,
         element: element,
         sliceType: obj.sliceType,
         imagePoint: cornerstone.canvasToPixel(element, obj.centerCircle.point),
+        lastAngle: angleInfo.angle,
       };
       cornerstone.triggerEvent(element, eventType, modifiedEventData);
       return false;
@@ -837,7 +852,7 @@ class MprOperateLine {
       Math.min(this.centerCircle.point.y, bottomRightCanvasPoint.y),
     );
   }
-
+  // todo 优化
   _mouseMoveCallback = (e: any) => {
     let obj = this;
     let eventData = e.detail;
@@ -1150,7 +1165,7 @@ class MprOperateLine {
       // return true;
     }
   };
-
+  // todo 优化
   _onImageRendered = (e: any) => {
     let obj = this;
     let eventData = e.detail;

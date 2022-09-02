@@ -77,13 +77,19 @@ export default {
       secure: false,
       logLevel: 'debug',
     },
-    '/switchvrmip': {
+    '/setrendertype': {
       target: proxyIPs.dev,
       changeOrigin: true,
       secure: false,
       logLevel: 'debug',
     },
     '/orientation': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
+    '/setvrsize': {
       target: proxyIPs.dev,
       changeOrigin: true,
       secure: false,
@@ -141,12 +147,17 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
-    '/switchvrmip': {
+    '/setrendertype': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
     '/orientation': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/setvrsize': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },

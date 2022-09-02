@@ -51,8 +51,13 @@ export async function rotateVr(payload: any) {
   return reqGet(endpoint, payload);
 }
 
-export async function switchVrmip(payload: any) {
-  const endpoint = `/switchvrmip`;
+export async function setVrSize(payload: any) {
+  const endpoint = `/setvrsize`;
+  return reqGet(endpoint, payload);
+}
+
+export async function setRenderType(payload: any) {
+  const endpoint = `/setrendertype`;
   return reqGet(endpoint, payload);
 }
 

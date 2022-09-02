@@ -101,3 +101,15 @@ export const revertNumber = (sliceType: string) => {
   }
   return number;
 };
+
+export const revertDataName = (name: string) => {
+  let type = 0;
+  if (name === 'VR') {
+    type = 0;
+  } else if (name === 'MIP') {
+    type = 1;
+  } else {
+    type = 2;
+  }
+  return type;
+};
