@@ -490,6 +490,17 @@ def update_thickness(
         'message': 'successful'
     }
 
+@app.get('/setthickness')
+def set_thickness(
+        plane_type: int,
+        thickness: float
+):
+    hm.SetThickness(thickness, mk.PlaneType(plane_type))
+
+    return {
+        'message': 'successful'
+    }
+
 
 @app.get('/updatemprtype')
 def update_mpr_type(
