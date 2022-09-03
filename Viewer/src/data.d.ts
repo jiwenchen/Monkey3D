@@ -1,5 +1,6 @@
 interface image3DStateType {
   imageData: any;
+  point: any;
 }
 
 interface viewport3DStateType {

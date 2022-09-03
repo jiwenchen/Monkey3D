@@ -4,7 +4,6 @@ import * as cornerstoneTools from 'cornerstone-tools';
 import { cornerstoneTools3D } from '@/common/cornerstone/cornerstoneToolsManager';
 import { enableElement } from '@/common/cornerstone/cornerstoneManager';
 import { getDvaApp } from 'umi';
-import mprOperateLine from '@/common/cornerstone/mprOperateLine';
 
 export const addToolsForElement = (element: HTMLElement, imgId: string) => {
   const imgType = imgId == 'vr' ? 'vr' : 'mpr';
@@ -67,14 +66,10 @@ export const getAllMprData = (sliceType?: string) => {
     data = data.filter((i: number) => i !== revertNumber(sliceType));
   }
   data.forEach((num) => {
-    getDvaApp()
-      ._store.dispatch({
-        type: 'image3DModel/getMprData',
-        payload: { plane_type: num },
-      })
-      .then((res: any) => {
-        mprOperateLine.setMprOperateLinePos(revertName(num), res);
-      });
+    getDvaApp()._store.dispatch({
+      type: 'image3DModel/getMprData',
+      payload: { plane_type: num },
+    });
   });
 };
 

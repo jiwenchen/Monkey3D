@@ -22,6 +22,7 @@ interface image3DModelType {
   reducers: {
     InitState: ImmerReducer<image3DStateType>;
     setImageData: ImmerReducer<image3DStateType>;
+    setPoint: ImmerReducer<image3DStateType>;
   };
   effects: {
     getVolumetype: Effect;
@@ -43,6 +44,7 @@ interface image3DModelType {
 }
 const image3DModelState = () => ({
   imageData: {},
+  point: {},
 });
 
 const image3DModel: image3DModelType = {
@@ -54,6 +56,9 @@ const image3DModel: image3DModelType = {
     },
     setImageData: function (state, action) {
       state.imageData = action.payload;
+    },
+    setPoint: function (state, action) {
+      state.point = action.payload;
     },
   },
   effects: {
@@ -71,12 +76,17 @@ const image3DModel: image3DModelType = {
         console.error('request failed');
         return;
       }
+      let point = yield select(
+        (state: { image3DModel: { point: any } }) => state.image3DModel.point,
+      );
+      point = { ...point, [plane_type]: { x: result.data.x, y: result.data.y } };
+      yield put({ type: 'setPoint', payload: point });
+
       let imageData = yield select(
         (state: { image3DModel: { imageData: any } }) => state.image3DModel.imageData,
       );
       imageData = { ...imageData, [plane_type]: result.data.image };
       yield put({ type: 'setImageData', payload: imageData });
-      return { x: result.data.x, y: result.data.y };
     },
     *panMpr({ payload }, { call }) {
       yield call(panMpr, payload);

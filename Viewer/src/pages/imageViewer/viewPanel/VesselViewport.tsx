@@ -14,8 +14,9 @@ import mprOperateLine from '@/common/cornerstone/mprOperateLine';
 import _ from 'lodash';
 
 const VesselViewport: React.FC<any> = (props) => {
-  const { imgId, imageData, dispatch, currentViewPort, currentTool } = props;
+  const { imgId, imageData, point, dispatch, currentViewPort, currentTool } = props;
   const base64Data = imageData[imgId];
+  const currentPoint = point[imgId];
   const canvasId = `vesselImage-${imgId}`;
   const elementRef = useRef<any | HTMLDivElement>(null);
 
@@ -60,16 +61,20 @@ const VesselViewport: React.FC<any> = (props) => {
     if (base64Data) {
       updatePostPrcsViewport(elementRef.current, imgId, base64Data);
       const length = Object.keys(imageData).filter((i) => i !== 'vr').length;
-      // 防止重复渲染十字线
-      if (imgId !== 'vr' && mprOperateLine.mprOperateLines.length < length) {
-        mprOperateLine.active(elementRef.current, revertName(imgId));
+      if (imgId !== 'vr') {
+        // 防止重复渲染十字线;
+        if (mprOperateLine.mprOperateLines.length < length) {
+          mprOperateLine.active(elementRef.current, revertName(imgId));
+        }
+        if (currentPoint.x && currentPoint.y) {
+          mprOperateLine.setMprOperateLinePos(revertName(imgId), currentPoint);
+        }
       }
     }
   }, [base64Data]);
 
   const manuallyModifyCoordinates = _.throttle((e: any) => {
-    const { imagePoint, changeType, sliceType, lastAngle } = e.detail;
-    console.log(lastAngle, 99999);
+    const { imagePoint, changeType, lastAngle } = e.detail;
     if (
       changeType === 'centerRect' ||
       changeType === 'horizontalLine' ||
@@ -92,7 +97,7 @@ const VesselViewport: React.FC<any> = (props) => {
         },
       });
     }
-    getAllMprData(sliceType);
+    getAllMprData();
   }, 200);
 
   useEffect(() => {
@@ -129,8 +134,8 @@ export default connect(
     image3DModel: image3DStateType;
     viewport3DModel: viewport3DStateType;
   }) => {
-    const { imageData } = image3DModel;
+    const { imageData, point } = image3DModel;
     const { currentViewPort, currentTool } = viewport3DModel;
-    return { imageData, currentViewPort, currentTool };
+    return { imageData, point, currentViewPort, currentTool };
   },
 )(VesselViewport);
