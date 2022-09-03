@@ -2,12 +2,13 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import GridLayout from './GridLayout';
 import $ from 'jquery';
-import { connect } from 'umi';
+import { connect, Dispatch } from 'umi';
 import { resizeAllImage } from '@/common/cornerstone/cornerstoneManager';
 import { generateLayout } from '@/utils/generateLayout';
 
 interface ViewportGridProps {
   layout: number[];
+  dispatch: Dispatch;
 }
 
 function ViewportGrid(props: ViewportGridProps) {

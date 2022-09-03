@@ -4,7 +4,6 @@ import * as cornerstoneTools from 'cornerstone-tools';
 const angleBetweenPoints = cornerstoneTools.importInternal('util/angleBetweenPoints');
 
 let mprOperateLines: any = [];
-
 class MprOperateLine {
   public sliceType: string;
   public horizontalLine: any;
@@ -23,7 +22,9 @@ class MprOperateLine {
   public rotateMode: boolean;
   public element: any;
   public centerSpacing: number;
-  public lastAngle: number;
+  public lastAngle: any;
+  public angeleData: number;
+  public centerAngle: number;
   constructor(type: string) {
     this.sliceType = type;
     this.horizontalLine = {};
@@ -42,7 +43,9 @@ class MprOperateLine {
     this.rotateMode = true;
     this.element = null;
     this.centerSpacing = 10;
-    this.lastAngle = 0;
+    this.lastAngle = null;
+    this.angeleData = 0;
+    this.centerAngle = 0;
     this._onImageRendered = this._onImageRendered.bind(this);
     this._mouseMoveCallback = this._mouseMoveCallback.bind(this);
     this._mouseDownCallback = this._mouseDownCallback.bind(this);
@@ -788,12 +791,13 @@ class MprOperateLine {
       if (angleInfo.direction < 0) {
         angleInfo.angle = -angleInfo.angle;
       }
+      obj.centerAngle = angleInfo.angle;
       let modifiedEventData = {
         changeType: lineType,
         element: element,
         sliceType: obj.sliceType,
         imagePoint: cornerstone.canvasToPixel(element, obj.centerCircle.point),
-        lastAngle: angleInfo.angle,
+        lastAngle: obj.lastAngle ? obj.lastAngle + angleInfo.angle : angleInfo.angle,
       };
       cornerstone.triggerEvent(element, eventType, modifiedEventData);
       return false;
@@ -802,6 +806,7 @@ class MprOperateLine {
     element.addEventListener(cornerstoneTools.EVENTS.MOUSE_DRAG, mouseDragCallback);
 
     function mouseUpCallback(e: any) {
+      obj.lastAngle = obj.centerAngle + obj.lastAngle;
       obj.horizontalLine.active = false;
       obj.verticalLine.active = false;
       obj.centerCircle.active = false;
@@ -852,7 +857,7 @@ class MprOperateLine {
       Math.min(this.centerCircle.point.y, bottomRightCanvasPoint.y),
     );
   }
-  // todo 优化
+
   _mouseMoveCallback = (e: any) => {
     let obj = this;
     let eventData = e.detail;
@@ -1165,7 +1170,7 @@ class MprOperateLine {
       // return true;
     }
   };
-  // todo 优化
+
   _onImageRendered = (e: any) => {
     let obj = this;
     let eventData = e.detail;
@@ -1828,7 +1833,6 @@ function setMprOperateLinePos(
     let operateLinePos = operateLine.getOperateLinePos();
     if (coordinate) {
       operateLine.setOperateLinePos(coordinate);
-      operateLine._onResize();
       return;
     }
     if (changeType === 'horizontalLine') {
