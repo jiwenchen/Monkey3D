@@ -17,7 +17,7 @@ interface viewport3DModelType {
 
 const viewport3DModelState = () => ({
   currentViewPort: { imgId: 'vr' },
-  layout: [2, 2],
+  layout: [2, 3],
   currentTool: '',
   crosshairsManager: {
     0: null,

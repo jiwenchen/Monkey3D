@@ -95,6 +95,12 @@ export default {
       secure: false,
       logLevel: 'debug',
     },
+    '/initserver': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
   },
   pre: {
     '/volumetype': {
@@ -158,6 +164,11 @@ export default {
       pathRewrite: { '^': '' },
     },
     '/setvrsize': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/initserver': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },
