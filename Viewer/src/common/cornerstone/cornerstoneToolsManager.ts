@@ -22,8 +22,11 @@ export const resetElement = (element: null | HTMLElement) => {
 };
 
 export const resetVr = () => {
-  getDvaApp()._store.dispatch({
+  const dva = getDvaApp()._store;
+  const uid = dva.getState().image3DModel.uid;
+  dva.dispatch({
     type: 'image3DModel/getRestVr',
+    payload: { uid },
   });
 };
 

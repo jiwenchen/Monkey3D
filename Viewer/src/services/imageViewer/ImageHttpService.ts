@@ -45,9 +45,9 @@ export async function wwwlVr(payload: any) {
   return reqGet(endpoint, payload);
 }
 
-export async function resetVr() {
+export async function resetVr(payload: any) {
   const endpoint = `/reset`;
-  return reqGet(endpoint);
+  return reqGet(endpoint, payload);
 }
 
 export async function rotateVr(payload: any) {

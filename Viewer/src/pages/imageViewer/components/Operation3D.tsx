@@ -3,10 +3,10 @@ import { Popover } from 'antd';
 import styles from '@/pages/imageViewer/components/Operation3D.less';
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { useDispatch } from 'umi';
+import { connect, useDispatch } from 'umi';
 import { revertDataName } from '@/utils/vesselManager';
 
-const Operation3D: React.FC = () => {
+const Operation3D: React.FC<any> = ({ uid }) => {
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const [renderType3D, setRenderType3D] = useState('VR');
@@ -20,7 +20,7 @@ const Operation3D: React.FC = () => {
     setVisible(false);
     dispatch({
       type: 'image3DModel/orientation',
-      payload: { dir: res },
+      payload: { dir: res, uid },
     });
   };
 
@@ -28,7 +28,7 @@ const Operation3D: React.FC = () => {
     setRenderType3D(res);
     dispatch({
       type: 'image3DModel/setRenderType',
-      payload: { type: revertDataName(res) }, //0:vr,1:mip,2:surface
+      payload: { type: revertDataName(res), uid }, //0:vr,1:mip,2:surface
     });
   };
   const content = () => {
@@ -86,4 +86,9 @@ const Operation3D: React.FC = () => {
   );
 };
 
-export default Operation3D;
+export default connect(
+  ({ image3DModel }: { image3DModel: image3DStateType; viewport3DModel: viewport3DStateType }) => {
+    const { uid } = image3DModel;
+    return { uid };
+  },
+)(Operation3D);

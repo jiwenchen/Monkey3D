@@ -3,6 +3,7 @@ import {
   getOrientation,
   getVolumetype,
   getVrData,
+  initServer,
   mprBrowse,
   panMpr,
   resetVr,
@@ -23,8 +24,10 @@ interface image3DModelType {
     InitState: ImmerReducer<image3DStateType>;
     setImageData: ImmerReducer<image3DStateType>;
     setPoint: ImmerReducer<image3DStateType>;
+    setUid: ImmerReducer<image3DStateType>;
   };
   effects: {
+    initServer: Effect;
     getVolumetype: Effect;
     getMprData: Effect;
     panMpr: Effect;
@@ -45,6 +48,7 @@ interface image3DModelType {
 const image3DModelState = () => ({
   imageData: {},
   point: {},
+  uid: '',
 });
 
 const image3DModel: image3DModelType = {
@@ -60,8 +64,20 @@ const image3DModel: image3DModelType = {
     setPoint: function (state, action) {
       state.point = action.payload;
     },
+    setUid: function (state, action) {
+      state.uid = action.payload;
+    },
   },
   effects: {
+    *initServer({}, { call, put }) {
+      const result: { message: string; uid: string } = yield call(initServer);
+      if (!result?.uid || !result.message) {
+        console.error('request failed');
+        return;
+      }
+      yield put({ type: 'setUid', payload: result?.uid });
+      return result?.uid;
+    },
     *getVolumetype({ payload }, { call }) {
       const result: { message: string } = yield call(getVolumetype, payload);
       return result?.message;
@@ -118,8 +134,8 @@ const image3DModel: image3DModelType = {
       }
       setImageData(result.data.image);
     },
-    *getRestVr(_, { call }) {
-      const result: { data: any; message: boolean } = yield call(resetVr);
+    *getRestVr({ payload }, { call }) {
+      const result: { data: any; message: boolean } = yield call(resetVr, payload);
       if (!result?.data || !result.message) {
         console.error('request failed');
         return;

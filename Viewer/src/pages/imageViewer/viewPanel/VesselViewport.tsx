@@ -14,7 +14,7 @@ import mprOperateLine from '@/common/cornerstone/mprOperateLine';
 import _ from 'lodash';
 
 const VesselViewport: React.FC<any> = (props) => {
-  const { imgId, imageData, point, dispatch, currentViewPort, currentTool } = props;
+  const { imgId, imageData, point, dispatch, currentViewPort, currentTool, uid } = props;
   const base64Data = imageData[imgId];
   const currentPoint = point[imgId];
   const canvasId = `vesselImage-${imgId}`;
@@ -22,7 +22,7 @@ const VesselViewport: React.FC<any> = (props) => {
 
   useEffect(() => {
     initPostPrcsViewport(elementRef.current, imgId);
-    if (imgId === 'vr') {
+    if (imgId === 'vr' && uid) {
       dispatch({
         type: 'viewport3DModel/setViewPortActive',
         payload: { element: elementRef.current },
@@ -31,7 +31,7 @@ const VesselViewport: React.FC<any> = (props) => {
       const height = elementRef.current.clientHeight;
       dispatch({
         type: 'image3DModel/setVrSize',
-        payload: { w: width, h: height },
+        payload: { w: width, h: height, uid },
       });
     }
     elementRef.current?.removeEventListener(
@@ -47,7 +47,7 @@ const VesselViewport: React.FC<any> = (props) => {
         'CornerstoneToolsMprOperatePositionModified',
         manuallyModifyCoordinates,
       );
-  }, []);
+  }, [uid]);
 
   const imgPaneClicked = (event: any, id: string) => {
     // event.preventDefault();
@@ -74,7 +74,7 @@ const VesselViewport: React.FC<any> = (props) => {
   }, [base64Data]);
 
   const manuallyModifyCoordinates = _.throttle((e: any) => {
-    const { imagePoint, changeType, lastAngle } = e.detail;
+    const { imagePoint, changeType, sliceType, lastAngle } = e.detail;
     if (
       changeType === 'centerRect' ||
       changeType === 'horizontalLine' ||
@@ -86,6 +86,7 @@ const VesselViewport: React.FC<any> = (props) => {
           plane_type: imgId,
           x: imagePoint.x,
           y: imagePoint.y,
+          uid,
         },
       });
     } else if (changeType.includes('Rotate')) {
@@ -94,10 +95,11 @@ const VesselViewport: React.FC<any> = (props) => {
         payload: {
           plane_type: imgId,
           angle: lastAngle,
+          uid,
         },
       });
     }
-    getAllMprData();
+    getAllMprData(sliceType);
   }, 200);
 
   useEffect(() => {
@@ -134,8 +136,8 @@ export default connect(
     image3DModel: image3DStateType;
     viewport3DModel: viewport3DStateType;
   }) => {
-    const { imageData, point } = image3DModel;
+    const { imageData, point, uid } = image3DModel;
     const { currentViewPort, currentTool } = viewport3DModel;
-    return { imageData, point, currentViewPort, currentTool };
+    return { imageData, point, currentViewPort, currentTool, uid };
   },
 )(VesselViewport);

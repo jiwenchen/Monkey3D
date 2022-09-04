@@ -46,9 +46,11 @@ export default class WwwcVrTool extends BaseTool {
 
     this.configuration.windowWidth += deltaX;
     this.configuration.windowCenter += deltaY;
-    getDvaApp()._store.dispatch({
+    const dva = getDvaApp()._store;
+    const uid = dva.getState().image3DModel.uid;
+    dva.dispatch({
       type: 'image3DModel/getWwwlVr',
-      payload: { ww: this.configuration.windowWidth, wl: this.configuration.windowCenter },
+      payload: { ww: this.configuration.windowWidth, wl: this.configuration.windowCenter, uid },
     });
     return false;
   }
