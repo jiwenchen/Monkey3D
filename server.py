@@ -11,6 +11,7 @@ import sys
 import numpy as np
 from pathlib import Path
 import json
+import uuid
 
 base_path = Path(__file__).resolve().parent
 print(base_path)
@@ -20,9 +21,6 @@ sys.path.append(str(base_path / "lib"))
 import pyMonkeyGL as mk
 
 app = FastAPI()
-
-hm = mk.HelloMonkey()
-hm.SetLogLevel(mk.LogLevelWarn)
 
 origins = [
     "*"
@@ -41,22 +39,51 @@ html_path = str(base_path / "Viewer" / "dist")
 app.mount("/hm/imageViewer", StaticFiles(directory=html_path, html=True), name="hm")
 app.mount("/hm", StaticFiles(directory=html_path, html=True), name="hm")
 
-
 volume = {"vol_type": 0}
+monkeys = {}
 
+def get_monkey_instance(
+    uid: str
+):
+    return monkeys[uid]
 
 @app.on_event('startup')
 def init_data():
     volume["vol_type"] = 1
     return volume
 
+@app.get('/initserver')
+def init_server():
+    uid = str(uuid.uuid4())
+    monkeys[uid] = mk.HelloMonkey()
+    # monkeys[uid].SetLogLevel(mk.LogLevelWarn)
+    return {
+        "uid": uid,
+        'message': 'successful'
+    }
+
+@app.get('/releaseserver')
+def release_server(
+    uid: str
+):
+    msg = 'successful'
+    if uid in monkeys:
+        del monkeys[uid]
+    else:
+        msg = f'not exist uid[{uid}]'
+
+    return {
+        'message': msg
+    }
 
 @app.post('/volumetype')
 def set_volume_type(
         data: dict
 ):
     vol_type = data.get('vol_type', 0)
+    uid = data.get('uid', '')
     volume["vol_type"] = vol_type
+    hm = get_monkey_instance(uid)
 
     file_path = f'{sys.path[0]}/data'
     vol_file = 'cardiac.mhd'
@@ -194,6 +221,7 @@ def set_volume_type(
 def set_line_index(
         data: dict
 ):
+    uid = data.get('uid', '')
     line_index = data.get('line_index', 0)
     vol_type = volume.get("vol_type", 0)
     cpr_line = np.array([])
@@ -214,7 +242,8 @@ def set_line_index(
         elif line_index == 2:
             cpr_line = np.array(
             )
-        
+    
+    hm = get_monkey_instance(uid)
     hm.SetCPRLinePatientArray(cpr_line)
 
     return {
@@ -223,9 +252,11 @@ def set_line_index(
 
 @app.get('/setvrsize')
 def set_vr_size(
+    uid: str,
     w: int,
     h: int
 ):
+    hm = get_monkey_instance(uid)
     b64str = hm.SetVRSize(w, h)
     return {
         'message': 'successful'
@@ -233,9 +264,11 @@ def set_vr_size(
 
 @app.get('/rotatevr')
 def rotatevr(
-        x_angle: float,
-        y_angle: float
+    uid: str,
+    x_angle: float,
+    y_angle: float
 ):
+    hm = get_monkey_instance(uid)
     hm.Rotate(x_angle, y_angle)
     b64str = hm.GetVRData_pngString()
 
@@ -249,9 +282,11 @@ def rotatevr(
 
 @app.get('/panvr')
 def pan_vr(
-        x_shift: float,
-        y_shift: float
+    uid: str,
+    x_shift: float,
+    y_shift: float
 ):
+    hm = get_monkey_instance(uid)
     hm.Pan(x_shift, y_shift)
     b64str = hm.GetVRData_pngString()
 
@@ -265,8 +300,10 @@ def pan_vr(
 
 @app.get('/zoomvr')
 def zoom_vr(
-        delta: float
+    uid: str,
+    delta: float
 ):
+    hm = get_monkey_instance(uid)
     print(hm.Zoom(delta))
     print(hm.GetZoomRatio())
     b64str = hm.GetVRData_pngString()
@@ -279,7 +316,10 @@ def zoom_vr(
     }
 
 @app.get('/reset')
-def reset():
+def reset(
+    uid: str
+):
+    hm = get_monkey_instance(uid)
     hm.Reset()
     b64str = hm.GetVRData_pngString()
 
@@ -292,7 +332,9 @@ def reset():
 
 @app.get('/vrdata')
 def get_vr_data(
+    uid: str,
 ):
+    hm = get_monkey_instance(uid)
     b64str = hm.GetVRData_pngString()
 
     return {
@@ -304,9 +346,11 @@ def get_vr_data(
 
 @app.get('/wwwl')
 def set_ww_wl(
-        ww: float,
-        wl: float
+    uid: str,
+    ww: float,
+    wl: float
 ):
+    hm = get_monkey_instance(uid)
     hm.SetVRWWWL(ww, wl)
     b64str = hm.GetVRData_pngString()
 
@@ -319,7 +363,10 @@ def set_ww_wl(
 
 
 @app.get('/loadtf')
-def loadtf():
+def loadtf(
+    uid: str
+):
+    hm = get_monkey_instance(uid)
     hm.LoadTransferFunction(f'{base_path}/trfns/coro.txt')
 
     b64str = hm.GetVRData_pngString()
@@ -332,7 +379,10 @@ def loadtf():
     }
 
 @app.get('/savetf')
-def savetf():
+def savetf(
+    uid: str
+):
+    hm = get_monkey_instance(uid)
     hm.SaveTransferFunction(f'{base_path}/trfns/test.txt')
     
     b64str = hm.GetVRData_pngString()
@@ -346,8 +396,10 @@ def savetf():
 
 @app.get('/setrendertype')
 def set_render_type(
+    uid: str,
     type: int
 ):
+    hm = get_monkey_instance(uid)
     hm.SetRenderType(mk.RenderType(type))
     b64str = hm.GetVRData_pngString()
     b64str = hm.GetVRData_pngString()
@@ -361,8 +413,10 @@ def set_render_type(
 
 @app.get('/orientation')
 def orientation(
+    uid: str,
     dir: str
 ):
+    hm = get_monkey_instance(uid)
     if "A" == dir:
         hm.Anterior()
     elif "P" == dir:
@@ -388,8 +442,10 @@ def orientation(
 
 @app.get('/vrenablecprline')
 def vrenablecprline(
-        enableCPR: bool
+    uid: str,
+    enableCPR: bool
 ):
+    hm = get_monkey_instance(uid)
     hm.ShowCPRLineInVR(enableCPR)
     b64str = hm.GetVRData_pngString()
 
@@ -403,8 +459,10 @@ def vrenablecprline(
 
 @app.get('/mprdata')
 def get_mpr_data(
-        plane_type: int
+    uid: str,
+    plane_type: int
 ):
+    hm = get_monkey_instance(uid)
     b64str = hm.GetPlaneData_pngString(mk.PlaneType(plane_type))
     pt = hm.GetCrossHairPoint(mk.PlaneType(plane_type))
 
@@ -420,8 +478,10 @@ def get_mpr_data(
 
 @app.get('/rotatestretchedcpr')
 def get_stretched_cpr(
-        angle: float,
+    uid: str,
+    angle: float,
 ):
+    hm = get_monkey_instance(uid)
     hm.RotateCPR(angle, mk.PlaneStretchedCPR)
     b64str = hm.GetPlaneData_pngString(mk.PlaneStretchedCPR)
 
@@ -435,8 +495,10 @@ def get_stretched_cpr(
 
 @app.get('/rotatestraightenedcpr')
 def get_straightened_cpr(
-        angle: float,
+    uid: str,
+    angle: float,
 ):
+    hm = get_monkey_instance(uid)
     hm.RotateCPR(angle, mk.PlaneStraightenedCPR)
     b64str = hm.GetPlaneData_pngString(mk.PlaneStraightenedCPR)
 
@@ -450,9 +512,11 @@ def get_straightened_cpr(
 
 @app.get('/mprbrowse')
 def browse_mpr_data(
-        plane_type: int,
-        delta: float
+    uid: str,
+    plane_type: int,
+    delta: float
 ):
+    hm = get_monkey_instance(uid)
     hm.Browse(delta, mk.PlaneType(plane_type))
     b64str = hm.GetPlaneData_pngString(mk.PlaneType(plane_type))
 
@@ -468,8 +532,10 @@ def browse_mpr_data(
 
 @app.get('/originbrowse')
 def browse_origin_data(
-        slice: int
+    uid: str,
+    slice: int
 ):
+    hm = get_monkey_instance(uid)
     b64str = hm.GetOriginData_pngString(slice)
 
     return {
@@ -482,8 +548,10 @@ def browse_origin_data(
 
 @app.get('/updatethickness')
 def update_thickness(
-        thickness: float
+    uid: str,
+    thickness: float
 ):
+    hm = get_monkey_instance(uid)
     hm.UpdateThickness(thickness)
 
     return {
@@ -492,9 +560,11 @@ def update_thickness(
 
 @app.get('/setthickness')
 def set_thickness(
-        plane_type: int,
-        thickness: float
+    uid: str,
+    plane_type: int,
+    thickness: float
 ):
+    hm = get_monkey_instance(uid)
     hm.SetThickness(thickness, mk.PlaneType(plane_type))
 
     return {
@@ -504,8 +574,10 @@ def set_thickness(
 
 @app.get('/updatemprtype')
 def update_mpr_type(
-        mpr_type: int
+    uid: str,
+    mpr_type: int
 ):
+    hm = get_monkey_instance(uid)
     hm.SetMPRType(mk.MPRType(mpr_type))
 
     return {
@@ -514,10 +586,12 @@ def update_mpr_type(
 
 @app.get('/panch')
 def pan_cross_hair(
-        plane_type: int,
-        x: float,
-        y: float
+    uid: str,
+    plane_type: int,
+    x: float,
+    y: float
 ):
+    hm = get_monkey_instance(uid)
     hm.PanCrossHair(x, y, mk.PlaneType(plane_type))
 
     return {
@@ -526,9 +600,11 @@ def pan_cross_hair(
 
 @app.get('/rotatech')
 def rotate_cross_hair(
-        plane_type: int,
-        angle: float
+    uid: str,
+    plane_type: int,
+    angle: float
 ):
+    hm = get_monkey_instance(uid)
     hm.RotateCrossHair(angle, mk.PlaneType(plane_type))
 
     return {
