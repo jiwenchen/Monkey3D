@@ -4,7 +4,7 @@ import GridLayout from './GridLayout';
 import $ from 'jquery';
 import { connect, Dispatch } from 'umi';
 import { resizeAllImage } from '@/common/cornerstone/cornerstoneManager';
-import { generateLayout } from '@/utils/generateLayout';
+import { generateSpecialLayout } from '@/utils/generateLayout';
 
 interface ViewportGridProps {
   layout: number[];
@@ -22,7 +22,7 @@ function ViewportGrid(props: ViewportGridProps) {
   useEffect(() => {
     //切换布局，重新设置行高, cols和layout
     setRowHeight(Math.floor($('.gridContainer').height() / numRows));
-    setLayouts(generateLayout(numRows, numColumns));
+    setLayouts(generateSpecialLayout(numRows, numColumns, 0, 2));
     setCols(numColumns);
     setWidth($('.gridContainer').width() - 95);
   }, [numRows, numColumns]);

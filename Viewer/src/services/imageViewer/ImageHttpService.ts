@@ -4,6 +4,10 @@ export async function getVolumetype(payload: any) {
   const endpoint = `/volumetype`;
   return reqPost(endpoint, payload);
 }
+export async function initServer(payload: any) {
+  const endpoint = `/initserver`;
+  return reqGet(endpoint, payload);
+}
 // mpr
 export async function getMprData(payload: any) {
   const endpoint = `/mprdata`;

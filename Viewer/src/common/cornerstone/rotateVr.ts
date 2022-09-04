@@ -31,8 +31,8 @@ export default class RotateVrTool extends BaseTool {
       },
     } = evt.detail;
     if (
-      (x && Math.abs(x) > this.configuration.minDelta) ||
-      (y && Math.abs(y) > this.configuration.minDelta)
+      (x && Math.abs(x) >= this.configuration.minDelta) ||
+      (y && Math.abs(y) >= this.configuration.minDelta)
     ) {
       getDvaApp()._store.dispatch({
         type: 'image3DModel/getRotateVr',
