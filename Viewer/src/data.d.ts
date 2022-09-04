@@ -1,6 +1,7 @@
 interface image3DStateType {
   imageData: any;
   point: any;
+  uid: string;
 }
 
 interface viewport3DStateType {

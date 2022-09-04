@@ -32,9 +32,11 @@ export default class ZoomVrTool extends BaseTool {
     }
     const { zoomInScale, zoomOutScale } = this.configuration;
     const scale = deltaY > 0 ? zoomInScale : zoomOutScale;
-    getDvaApp()._store.dispatch({
+    const dva = getDvaApp()._store;
+    const uid = dva.getState().image3DModel.uid;
+    dva.dispatch({
       type: 'image3DModel/getZoomVr',
-      payload: { delta: scale },
+      payload: { delta: scale, uid },
     });
 
     return false;

@@ -18,17 +18,22 @@ const ImageViewer: React.FC<ImageViewerProps> = ({}) => {
 
   useEffect(() => {
     dispatch({
-      type: 'image3DModel/getVolumetype',
-      payload: { vol_type: 1 },
+      type: 'image3DModel/initServer',
       // @ts-ignore
-    }).then((res: string) => {
-      if (res === 'successful') {
-        dispatch({
-          type: 'image3DModel/setRenderType',
-          payload: { type: 0 }, //0:vr,1:mip,2:surface
-        });
-        getAllMprData();
-      }
+    }).then((uid: string) => {
+      dispatch({
+        type: 'image3DModel/getVolumetype',
+        payload: { vol_type: 1, uid },
+        // @ts-ignore
+      }).then((res: string) => {
+        if (res === 'successful') {
+          dispatch({
+            type: 'image3DModel/setRenderType',
+            payload: { type: 0, uid }, //0:vr,1:mip,2:surface
+          });
+          getAllMprData();
+        }
+      });
     });
   }, []);
 

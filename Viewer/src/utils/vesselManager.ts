@@ -65,10 +65,12 @@ export const getAllMprData = (sliceType?: string) => {
   if (sliceType) {
     data = data.filter((i: number) => i !== revertNumber(sliceType));
   }
+  const dva = getDvaApp()._store;
+  const uid = dva.getState().image3DModel.uid;
   data.forEach((num) => {
     getDvaApp()._store.dispatch({
       type: 'image3DModel/getMprData',
-      payload: { plane_type: num },
+      payload: { plane_type: num, uid },
     });
   });
 };
