@@ -10,6 +10,7 @@ import {
   rotatech,
   rotateVr,
   setRenderType,
+  setThickness,
   setVrSize,
   wwwlVr,
   zoomVr,
@@ -40,6 +41,7 @@ interface image3DModelType {
     setRenderType: Effect;
     orientation: Effect;
     setVrSize: Effect;
+    setThickness: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -168,6 +170,9 @@ const image3DModel: image3DModelType = {
     },
     *setVrSize({ payload }, { call }) {
       yield call(setVrSize, payload);
+    },
+    *setThickness({ payload }, { call }) {
+      yield call(setThickness, payload);
     },
   },
   subscriptions: {
