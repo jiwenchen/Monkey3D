@@ -69,3 +69,7 @@ export async function getOrientation(payload: any) {
   const endpoint = `/orientation`;
   return reqGet(endpoint, payload);
 }
+export async function setThickness(payload: any) {
+  const endpoint = `/setthickness`;
+  return reqGet(endpoint, payload);
+}

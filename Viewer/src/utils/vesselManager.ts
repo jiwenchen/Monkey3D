@@ -75,6 +75,7 @@ export const getAllMprData = (sliceType?: string) => {
   });
 };
 
+// 0:Axial,1:Sagittal,2:Coronal
 export const revertName = (imgId: number) => {
   let name = 'Axial';
   if (imgId === 0) {
@@ -87,6 +88,7 @@ export const revertName = (imgId: number) => {
   return name;
 };
 
+// 0:Axial,1:Sagittal,2:Coronal
 export const revertNumber = (sliceType: string) => {
   let number = 0;
   if (sliceType === 'Axial') {
@@ -99,6 +101,7 @@ export const revertNumber = (sliceType: string) => {
   return number;
 };
 
+// 0:Axial,1:Sagittal,2:Coronal
 export const revertDataName = (name: string) => {
   let type = 0;
   if (name === 'VR') {

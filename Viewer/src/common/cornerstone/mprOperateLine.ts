@@ -406,15 +406,25 @@ class MprOperateLine {
     obj.centerCircle.imagePoint = cornerstone.canvasToPixel(obj.element, obj.centerCircle.point);
   }
 
+  calculateSliceThick(pt1: any, pt2: any) {
+    let imgPoint1 = cornerstone.canvasToPixel(this.element, pt1);
+    let imgPoint2 = cornerstone.canvasToPixel(this.element, pt2);
+    return Math.round(
+      Math.max(Math.abs(imgPoint1.x - imgPoint2.x), Math.abs(imgPoint1.y - imgPoint2.y)),
+    );
+  }
+
   moveLines(mouseEventData: any, lineType: string) {
     let obj = this;
     let element = mouseEventData.element;
-    let image = cornerstone.getEnabledElement(element).image;
+    let image: any = cornerstone.getEnabledElement(element).image;
     let width = element.clientWidth;
     let height = element.clientHeight;
 
     function mouseDragCallback(e: any) {
       const eventData = e.detail;
+      let thickness = null; // 获取层厚
+      const { columnPixelSpacing, rowPixelSpacing } = image;
       const { startPoints, currentPoints, viewport } = eventData;
       if (lineType === 'horizontalLine') {
         obj.horizontalLine.active = true;
@@ -521,6 +531,19 @@ class MprOperateLine {
           dis,
           0,
         );
+        // 计算层厚
+        obj.horizontalTopSliceLine.sliceNumber = obj.horizontalBottomSliceLine.sliceNumber = 0;
+        if (obj.horizontalTopSliceLine.sliceThick !== 0) {
+          obj.horizontalTopSliceLine.sliceNumber = obj.horizontalBottomSliceLine.sliceNumber =
+            obj.calculateSliceThick(
+              obj.horizontalLine.startPoint,
+              obj.horizontalTopSliceLine.startPoint,
+            );
+        }
+        thickness = {
+          sliceNumber: obj.horizontalTopSliceLine.sliceNumber * 2 * columnPixelSpacing,
+          line: obj.horizontalLine,
+        };
       }
       if (lineType === 'horizontalLineBottomSlice') {
         obj.horizontalBottomSliceLine.active = true;
@@ -575,6 +598,19 @@ class MprOperateLine {
           dis,
           0,
         );
+        // 计算层厚
+        obj.horizontalTopSliceLine.sliceNumber = obj.horizontalBottomSliceLine.sliceNumber = 0;
+        if (obj.horizontalTopSliceLine.sliceThick !== 0) {
+          obj.horizontalTopSliceLine.sliceNumber = obj.horizontalBottomSliceLine.sliceNumber =
+            obj.calculateSliceThick(
+              obj.horizontalLine.startPoint,
+              obj.horizontalBottomSliceLine.startPoint,
+            );
+        }
+        thickness = {
+          sliceNumber: obj.horizontalBottomSliceLine.sliceNumber * 2 * columnPixelSpacing,
+          line: obj.horizontalLine,
+        };
       }
       if (lineType === 'verticalLine') {
         obj.verticalLine.active = true;
@@ -677,6 +713,19 @@ class MprOperateLine {
           dis,
           0,
         );
+        // 计算层厚
+        obj.verticalTopSliceLine.sliceNumber = obj.verticalBottomSliceLine.sliceNumber = 0;
+        if (obj.verticalTopSliceLine.sliceThick !== 0) {
+          obj.verticalTopSliceLine.sliceNumber = obj.verticalBottomSliceLine.sliceNumber =
+            obj.calculateSliceThick(
+              obj.verticalLine.startPoint,
+              obj.verticalTopSliceLine.startPoint,
+            );
+        }
+        thickness = {
+          sliceNumber: obj.verticalTopSliceLine.sliceNumber * 2 * rowPixelSpacing,
+          line: obj.verticalLine,
+        };
       }
       if (lineType === 'verticalLineBottomSlice') {
         obj.verticalBottomSliceLine.active = true;
@@ -730,6 +779,19 @@ class MprOperateLine {
           dis,
           0,
         );
+        // 计算层厚
+        obj.verticalTopSliceLine.sliceNumber = obj.verticalBottomSliceLine.sliceNumber = 0;
+        if (obj.verticalTopSliceLine.sliceThick !== 0) {
+          obj.verticalTopSliceLine.sliceNumber = obj.verticalBottomSliceLine.sliceNumber =
+            obj.calculateSliceThick(
+              obj.verticalLine.startPoint,
+              obj.verticalBottomSliceLine.startPoint,
+            );
+        }
+        thickness = {
+          sliceNumber: obj.verticalBottomSliceLine.sliceNumber * 2 * rowPixelSpacing,
+          line: obj.verticalLine,
+        };
       }
       if (lineType === 'centerRect') {
         obj.centerCircle.active = true;
@@ -747,6 +809,22 @@ class MprOperateLine {
         c: { x: number; y: number },
         d: { x: number; y: number },
       ) {
+        a = {
+          x: Math.round(a.x),
+          y: Math.round(a.y),
+        };
+        b = {
+          x: Math.round(b.x),
+          y: Math.round(b.y),
+        };
+        c = {
+          x: Math.round(c.x),
+          y: Math.round(c.y),
+        };
+        d = {
+          x: Math.round(d.x),
+          y: Math.round(d.y),
+        };
         let denominator = (b.y - a.y) * (d.x - c.x) - (a.x - b.x) * (c.y - d.y);
         if (denominator === 0) {
           return false;
@@ -780,24 +858,27 @@ class MprOperateLine {
         }
         return false;
       }
-      let eventType = 'CornerstoneToolsMprOperatePositionModified';
+
       const rect = element.getBoundingClientRect(element);
       const { scale, translation } = viewport;
       const centerPoints = {
         x: rect.left + width / 2 + translation.x * scale,
         y: rect.top + height / 2 + translation.y * scale,
       };
+      // 计算旋转角度
       const angleInfo = angleBetweenPoints(centerPoints, startPoints.client, currentPoints.client);
       if (angleInfo.direction < 0) {
         angleInfo.angle = -angleInfo.angle;
       }
       obj.centerAngle = angleInfo.angle;
-      let modifiedEventData = {
+      const eventType = 'CornerstoneToolsMprOperatePositionModified';
+      const modifiedEventData = {
         changeType: lineType,
         element: element,
         sliceType: obj.sliceType,
         imagePoint: cornerstone.canvasToPixel(element, obj.centerCircle.point),
         lastAngle: obj.lastAngle ? obj.lastAngle + angleInfo.angle : angleInfo.angle,
+        thicknessData: thickness,
       };
       cornerstone.triggerEvent(element, eventType, modifiedEventData);
       return false;
@@ -975,6 +1056,14 @@ class MprOperateLine {
     if (obj.centerCircle.active) {
       obj.verticalLine.active = false;
       obj.horizontalLine.active = false;
+    }
+
+    if (obj.horizontalTopSliceLine.active && obj.horizontalBottomSliceLine.active) {
+      obj.horizontalTopSliceLine.active = false;
+    }
+
+    if (obj.verticalTopSliceLine.active && obj.verticalBottomSliceLine.active) {
+      obj.verticalTopSliceLine.active = false;
     }
 
     if (

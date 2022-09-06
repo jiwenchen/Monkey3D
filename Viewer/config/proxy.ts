@@ -101,6 +101,12 @@ export default {
       secure: false,
       logLevel: 'debug',
     },
+    '/setthickness': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
   },
   pre: {
     '/volumetype': {
@@ -169,6 +175,11 @@ export default {
       pathRewrite: { '^': '' },
     },
     '/initserver': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/setthickness': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },
