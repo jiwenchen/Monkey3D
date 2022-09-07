@@ -7,6 +7,7 @@ import RotateVrTool from '@/common/cornerstone/rotateVr';
 import ZoomVrTool from './zoomVr';
 import WwwcVrTool from './wwwcVr';
 import StackScroll3dMouseWheelTool from './stackScroll3dMouseWheelTool';
+import PanVrTool from './panVr';
 cornerstoneTools.external.cornerstone = cornerstone;
 cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
 cornerstoneTools.external.Hammer = Hammer;
@@ -14,6 +15,7 @@ cornerstoneTools.init();
 cornerstoneTools.ZoomVrTool = ZoomVrTool;
 cornerstoneTools.RotateVrTool = RotateVrTool;
 cornerstoneTools.WwwcVrTool = WwwcVrTool;
+cornerstoneTools.PanVrTool = PanVrTool;
 cornerstoneTools.StackScroll3dMouseWheelTool = StackScroll3dMouseWheelTool;
 
 export const resetElement = (element: null | HTMLElement) => {
@@ -31,6 +33,6 @@ export const resetVr = () => {
 };
 
 export const cornerstoneTools3D = {
-  vr: ['ZoomVr', 'Pan', 'WwwcVr', 'RotateVr'],
+  vr: ['ZoomVr', 'PanVr', 'WwwcVr', 'RotateVr'],
   mpr: ['Zoom', 'Pan', 'Wwwc', 'Length', 'Probe'],
 };

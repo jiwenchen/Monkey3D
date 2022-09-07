@@ -8,7 +8,7 @@ export async function initServer(payload: any) {
   const endpoint = `/initserver`;
   return reqGet(endpoint, payload);
 }
-// mpr
+
 export async function getMprData(payload: any) {
   const endpoint = `/mprdata`;
   return reqGet(endpoint, payload);
@@ -34,9 +34,13 @@ export async function rotatech(payload: any) {
   return reqGet(endpoint, payload);
 }
 
-// vr
 export async function zoomVr(payload: any) {
   const endpoint = `/zoomvr`;
+  return reqGet(endpoint, payload);
+}
+
+export async function panVr(payload: any) {
+  const endpoint = `/panvr`;
   return reqGet(endpoint, payload);
 }
 
@@ -71,5 +75,9 @@ export async function getOrientation(payload: any) {
 }
 export async function setThickness(payload: any) {
   const endpoint = `/setthickness`;
+  return reqGet(endpoint, payload);
+}
+export async function releaseServer(payload: any) {
+  const endpoint = `/releaseserver`;
   return reqGet(endpoint, payload);
 }
