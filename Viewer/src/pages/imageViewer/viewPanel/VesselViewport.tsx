@@ -3,6 +3,7 @@ import { connect } from 'umi';
 import classnames from 'classnames';
 import styles from './VesselViewport.less';
 import {
+  changeAllSliceThickness,
   getAllMprData,
   initPostPrcsViewport,
   revertName,
@@ -104,18 +105,19 @@ const VesselViewport: React.FC<any> = (props) => {
       });
       getAllMprData(sliceType);
     } else if (changeType.includes('Slice')) {
-      const type = thicknessData.line.type;
+      const lineType = thicknessData.line.type;
+      changeAllSliceThickness(sliceType, lineType, thicknessData.data);
       dispatch({
         type: 'image3DModel/setThickness',
         payload: {
-          plane_type: revertNumber(type),
+          plane_type: revertNumber(lineType),
           thickness: thicknessData.sliceNumber,
           uid,
         },
       });
       dispatch({
         type: 'image3DModel/getMprData',
-        payload: { plane_type: revertNumber(type), uid },
+        payload: { plane_type: revertNumber(lineType), uid },
       });
     }
   }, 200);

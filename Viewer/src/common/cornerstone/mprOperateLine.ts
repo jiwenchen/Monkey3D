@@ -543,6 +543,10 @@ class MprOperateLine {
         thickness = {
           sliceNumber: obj.horizontalTopSliceLine.sliceNumber * 2 * columnPixelSpacing,
           line: obj.horizontalLine,
+          data: {
+            type: 'horizontalTopSliceLine',
+            data: obj.horizontalTopSliceLine,
+          },
         };
       }
       if (lineType === 'horizontalLineBottomSlice') {
@@ -610,6 +614,10 @@ class MprOperateLine {
         thickness = {
           sliceNumber: obj.horizontalBottomSliceLine.sliceNumber * 2 * columnPixelSpacing,
           line: obj.horizontalLine,
+          data: {
+            type: 'horizontalBottomSliceLine',
+            data: obj.horizontalBottomSliceLine,
+          },
         };
       }
       if (lineType === 'verticalLine') {
@@ -725,6 +733,10 @@ class MprOperateLine {
         thickness = {
           sliceNumber: obj.verticalTopSliceLine.sliceNumber * 2 * rowPixelSpacing,
           line: obj.verticalLine,
+          data: {
+            type: 'verticalTopSliceLine',
+            data: obj.verticalTopSliceLine,
+          },
         };
       }
       if (lineType === 'verticalLineBottomSlice') {
@@ -791,6 +803,10 @@ class MprOperateLine {
         thickness = {
           sliceNumber: obj.verticalBottomSliceLine.sliceNumber * 2 * rowPixelSpacing,
           line: obj.verticalLine,
+          data: {
+            type: 'verticalBottomSliceLine',
+            data: obj.verticalBottomSliceLine,
+          },
         };
       }
       if (lineType === 'centerRect') {

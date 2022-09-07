@@ -4,6 +4,7 @@ import * as cornerstoneTools from 'cornerstone-tools';
 import { cornerstoneTools3D } from '@/common/cornerstone/cornerstoneToolsManager';
 import { enableElement } from '@/common/cornerstone/cornerstoneManager';
 import { getDvaApp } from 'umi';
+import mprOperateLine from '@/common/cornerstone/mprOperateLine';
 
 export const addToolsForElement = (element: HTMLElement, imgId: string) => {
   const imgType = imgId == 'vr' ? 'vr' : 'mpr';
@@ -76,40 +77,99 @@ export const getAllMprData = (sliceType?: string) => {
 };
 
 // 0:Axial,1:Sagittal,2:Coronal
+// 蓝：Axial 红：Sagittal，黄：Coronal，
 export const revertName = (imgId: number) => {
-  let name = 'Axial';
   if (imgId === 0) {
-    name = 'Axial';
+    return 'Axial';
   } else if (imgId === 1) {
-    name = 'Sagittal';
+    return 'Sagittal';
   } else {
-    name = 'Coronal';
+    return 'Coronal';
   }
-  return name;
 };
 
 // 0:Axial,1:Sagittal,2:Coronal
+// 蓝：Axial 红：Sagittal，黄：Coronal，
 export const revertNumber = (sliceType: string) => {
-  let number = 0;
   if (sliceType === 'Axial') {
-    number = 0;
+    return 0;
   } else if (sliceType === 'Sagittal') {
-    number = 1;
+    return 1;
   } else {
-    number = 2;
+    return 2;
   }
-  return number;
 };
 
 // 0:Axial,1:Sagittal,2:Coronal
+// 蓝：Axial 红：Sagittal，黄：Coronal，
 export const revertDataName = (name: string) => {
-  let type = 0;
   if (name === 'VR') {
-    type = 0;
+    return 0;
   } else if (name === 'MIP') {
-    type = 1;
+    return 1;
   } else {
-    type = 2;
+    return 2;
   }
-  return type;
+};
+
+// 0:Axial,1:Sagittal,2:Coronal
+// 蓝：Axial 红：Sagittal，黄：Coronal，
+export const changeSliceType = (sliceType: string, lineType: string) => {
+  if (sliceType === 'Axial') {
+    if (lineType === 'Coronal') {
+      return 'Sagittal';
+    } else {
+      return 'Coronal';
+    }
+  } else if (sliceType === 'Sagittal') {
+    if (lineType === 'Coronal') {
+      return 'Axial';
+    } else {
+      return 'Coronal';
+    }
+  } else {
+    if (lineType === 'Sagittal') {
+      return 'Axial';
+    } else {
+      return 'Sagittal';
+    }
+  }
+};
+
+// 0:Axial,1:Sagittal,2:Coronal
+// 蓝：Axial 红：Sagittal，黄：Coronal，
+export const changeAllSliceThickness = (sliceType: string, lineType: string, data: any) => {
+  const linePointSliceType = changeSliceType(sliceType, lineType);
+  const operateLine = mprOperateLine.mprOperateLines.find(
+    (line: any) => line.getSliceType() === linePointSliceType,
+  );
+  if (
+    (sliceType === 'Axial' && linePointSliceType === 'Sagittal') ||
+    (sliceType === 'Sagittal' && linePointSliceType === 'Axial')
+  ) {
+    if (data.type.includes('horizontal')) {
+      operateLine['verticalBottomSliceLine'].sliceThick = data.data.sliceThick;
+      operateLine['verticalBottomSliceLine'].sliceNumber = data.data.sliceNumber;
+      operateLine['verticalTopSliceLine'].sliceThick = data.data.sliceThick;
+      operateLine['verticalTopSliceLine'].sliceNumber = data.data.sliceNumber;
+    } else {
+      operateLine['horizontalBottomSliceLine'].sliceThick = data.data.sliceThick;
+      operateLine['horizontalBottomSliceLine'].sliceNumber = data.data.sliceNumber;
+      operateLine['horizontalTopSliceLine'].sliceThick = data.data.sliceThick;
+      operateLine['horizontalTopSliceLine'].sliceNumber = data.data.sliceNumber;
+    }
+  } else {
+    if (data.type.includes('horizontal')) {
+      operateLine['horizontalBottomSliceLine'].sliceThick = data.data.sliceThick;
+      operateLine['horizontalBottomSliceLine'].sliceNumber = data.data.sliceNumber;
+      operateLine['horizontalTopSliceLine'].sliceThick = data.data.sliceThick;
+      operateLine['horizontalTopSliceLine'].sliceNumber = data.data.sliceNumber;
+    } else {
+      operateLine['verticalBottomSliceLine'].sliceThick = data.data.sliceThick;
+      operateLine['verticalBottomSliceLine'].sliceNumber = data.data.sliceNumber;
+      operateLine['verticalTopSliceLine'].sliceThick = data.data.sliceThick;
+      operateLine['verticalTopSliceLine'].sliceNumber = data.data.sliceNumber;
+    }
+  }
+  cornerstone.updateImage(operateLine.element);
 };
