@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { getDvaApp } from 'umi';
 import * as cornerstone from 'cornerstone-core';
 import * as cornerstoneTools from 'cornerstone-tools';
 const angleBetweenPoints = cornerstoneTools.importInternal('util/angleBetweenPoints');
@@ -912,16 +913,12 @@ class MprOperateLine {
       element.removeEventListener(cornerstoneTools.EVENTS.MOUSE_CLICK, mouseUpCallback);
       element.addEventListener(cornerstoneTools.EVENTS.MOUSE_MOVE, obj._mouseMoveCallback);
 
-      // 恢复当前passive工具
-      // TODO: 有没有更好的替代方案
-      // cornerstoneTools.setToolActiveForElement(
-      //   element,
-      //   HYIF.viewerbase.toolManager.getActiveTool(),
-      //   {
-      //     mouseButtonMask: 1,
-      //   },
-      // );
-
+      // active当前工具
+      const dva = getDvaApp()._store;
+      let currentTool = dva?.getState().viewport3DModel.currentTool;
+      cornerstoneTools.setToolActiveForElement(element, currentTool, {
+        mouseButtonMask: 1,
+      });
       cornerstone.updateImage(element);
     }
 
@@ -1255,6 +1252,7 @@ class MprOperateLine {
     if (obj.horizontalBottomSliceLine.active) {
       element.removeEventListener(cornerstoneTools.EVENTS.MOUSE_MOVE, obj._mouseMoveCallback);
       this.moveLines(eventData, 'horizontalLineBottomSlice');
+      active = true;
     }
 
     if (obj.centerCircle.active) {
@@ -1267,12 +1265,10 @@ class MprOperateLine {
       e.stopPropagation();
       e.preventDefault();
 
-      // passive当前工具
-      // cornerstoneTools.setToolPassiveForElement(
-      //   element,
-      //   HYIF.viewerbase.toolManager.getActiveTool(),
-      // );
-      // return true;
+      // Enabled当前工具
+      const dva = getDvaApp()._store;
+      let currentTool = dva?.getState().viewport3DModel.currentTool;
+      cornerstoneTools.setToolEnabledForElement(element, currentTool);
     }
   };
 
