@@ -53,6 +53,12 @@ export default {
       secure: false,
       logLevel: 'debug',
     },
+    '/panvr': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
     '/wwwl': {
       target: proxyIPs.dev,
       changeOrigin: true,
@@ -102,6 +108,12 @@ export default {
       logLevel: 'debug',
     },
     '/setthickness': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
+    '/releaseserver': {
       target: proxyIPs.dev,
       changeOrigin: true,
       secure: false,
@@ -139,6 +151,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
+    '/panvr': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
     '/wwwl': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
@@ -180,6 +197,11 @@ export default {
       pathRewrite: { '^': '' },
     },
     '/setthickness': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/releaseserver': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },

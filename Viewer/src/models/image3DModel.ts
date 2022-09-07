@@ -6,6 +6,8 @@ import {
   initServer,
   mprBrowse,
   panMpr,
+  panVr,
+  releaseServer,
   resetVr,
   rotatech,
   rotateVr,
@@ -35,6 +37,7 @@ interface image3DModelType {
     rotatech: Effect;
     getVrData: Effect;
     getZoomVr: Effect;
+    getPanVr: Effect;
     getRotateVr: Effect;
     getRestVr: Effect;
     getWwwlVr: Effect;
@@ -42,6 +45,7 @@ interface image3DModelType {
     orientation: Effect;
     setVrSize: Effect;
     setThickness: Effect;
+    releaseServer: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -128,6 +132,14 @@ const image3DModel: image3DModelType = {
       }
       setImageData(result.data.image);
     },
+    *getPanVr({ payload }, { call }) {
+      const result: { data: any; message: boolean } = yield call(panVr, payload);
+      if (!result?.data || !result.message) {
+        console.error('request failed');
+        return;
+      }
+      setImageData(result.data.image);
+    },
     *getRotateVr({ payload }, { call }) {
       const result: { data: any; message: boolean } = yield call(rotateVr, payload);
       if (!result?.data || !result.message) {
@@ -173,6 +185,9 @@ const image3DModel: image3DModelType = {
     },
     *setThickness({ payload }, { call }) {
       yield call(setThickness, payload);
+    },
+    *releaseServer({ payload }, { call }) {
+      yield call(releaseServer, payload);
     },
   },
   subscriptions: {
