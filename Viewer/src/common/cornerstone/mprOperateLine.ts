@@ -916,9 +916,11 @@ class MprOperateLine {
       // active当前工具
       const dva = getDvaApp()._store;
       let currentTool = dva?.getState().viewport3DModel.currentTool;
-      cornerstoneTools.setToolActiveForElement(element, currentTool, {
-        mouseButtonMask: 1,
-      });
+      if (currentTool) {
+        cornerstoneTools.setToolActiveForElement(element, currentTool, {
+          mouseButtonMask: 1,
+        });
+      }
       cornerstone.updateImage(element);
     }
 
@@ -1268,7 +1270,7 @@ class MprOperateLine {
       // Enabled当前工具
       const dva = getDvaApp()._store;
       let currentTool = dva?.getState().viewport3DModel.currentTool;
-      cornerstoneTools.setToolEnabledForElement(element, currentTool);
+      if (currentTool) cornerstoneTools.setToolEnabledForElement(element, currentTool);
     }
   };
 
