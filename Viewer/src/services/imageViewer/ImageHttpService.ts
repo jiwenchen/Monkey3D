@@ -21,7 +21,7 @@ export async function mprBrowse(payload: any) {
 
 export async function getVrData(payload: any) {
   const endpoint = `/vrdata`;
-  return reqGet(endpoint);
+  return reqGet(endpoint, payload);
 }
 
 export async function panMpr(payload: any) {

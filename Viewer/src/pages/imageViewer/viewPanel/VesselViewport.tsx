@@ -36,6 +36,7 @@ const VesselViewport: React.FC<any> = (props) => {
           type: 'image3DModel/setVrSize',
           payload: { w: width, h: height, uid },
         });
+        window.addEventListener('resize', resize);
       }
       elementRef.current?.removeEventListener(
         'CornerstoneToolsMprOperatePositionModified',
@@ -46,12 +47,30 @@ const VesselViewport: React.FC<any> = (props) => {
         manuallyModifyCoordinates,
       );
     }
-    return () =>
+    return () => {
+      window.removeEventListener('resize', () => {});
       elementRef.current?.removeEventListener(
         'CornerstoneToolsMprOperatePositionModified',
         manuallyModifyCoordinates,
       );
+    };
   }, [uid]);
+
+  const resize = _.debounce(() => {
+    const width = elementRef.current.clientWidth;
+    const height = elementRef.current.clientHeight;
+    dispatch({
+      type: 'image3DModel/setVrSize',
+      payload: { w: width, h: height, uid },
+    }).then((res: any) => {
+      if (res === 'successful') {
+        dispatch({
+          type: 'image3DModel/getVrData',
+          payload: { uid },
+        });
+      }
+    });
+  }, 200);
 
   const imgPaneClicked = (event: any, id: string) => {
     // event.preventDefault();
