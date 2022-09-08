@@ -119,6 +119,12 @@ export default {
       secure: false,
       logLevel: 'debug',
     },
+    '/updatemprtype': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
   },
   pre: {
     '/volumetype': {
@@ -202,6 +208,11 @@ export default {
       pathRewrite: { '^': '' },
     },
     '/releaseserver': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/updatemprtype': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },

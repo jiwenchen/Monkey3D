@@ -14,6 +14,7 @@ import {
   setRenderType,
   setThickness,
   setVrSize,
+  updatemprType,
   wwwlVr,
   zoomVr,
 } from '@/services/imageViewer/ImageHttpService';
@@ -46,6 +47,7 @@ interface image3DModelType {
     setVrSize: Effect;
     setThickness: Effect;
     releaseServer: Effect;
+    updatemprType: Effect;
   };
   subscriptions: {
     setup: Subscription;
@@ -189,6 +191,10 @@ const image3DModel: image3DModelType = {
     },
     *releaseServer({ payload }, { call }) {
       yield call(releaseServer, payload);
+    },
+    *updatemprType({ payload }, { call }) {
+      const result: { message: boolean } = yield call(updatemprType, payload);
+      return result?.message;
     },
   },
   subscriptions: {
