@@ -116,8 +116,8 @@ const image3DModel: image3DModelType = {
     *rotatech({ payload }, { call }) {
       yield call(rotatech, payload);
     },
-    *getVrData(_, { call }) {
-      const result: { data: any; message: boolean } = yield call(getVrData);
+    *getVrData({ payload }, { call }) {
+      const result: { data: any; message: boolean } = yield call(getVrData, payload);
       if (!result?.data || !result.message) {
         console.error('request failed');
         return;
@@ -181,7 +181,8 @@ const image3DModel: image3DModelType = {
       setImageData(result.data.image);
     },
     *setVrSize({ payload }, { call }) {
-      yield call(setVrSize, payload);
+      const result: { message: boolean } = yield call(setVrSize, payload);
+      return result?.message;
     },
     *setThickness({ payload }, { call }) {
       yield call(setThickness, payload);

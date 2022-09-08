@@ -48,6 +48,7 @@ export const updatePostPrcsViewport = (element: HTMLElement, imgId: string, base
   const cornerstoneMetaData: any =
     imgId == 'vr' ? decodeVR(base64Data, imgId) : decodeMPR(base64Data, imgId);
   cornerstone.displayImage(element, cornerstoneMetaData);
+  if (imgId == 'vr') cornerstone.reset(element);
   cornerstone.updateImage(element, true);
 };
 
