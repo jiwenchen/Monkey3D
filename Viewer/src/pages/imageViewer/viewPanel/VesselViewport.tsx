@@ -14,6 +14,7 @@ import {
 import Operation3D from '@/pages/imageViewer/components/Operation3D';
 import mprOperateLine from '@/common/cornerstone/mprOperateLine';
 import _ from 'lodash';
+import ThicknessType from '../components/ThicknessType';
 
 const VesselViewport: React.FC<any> = (props) => {
   const { imgId, imageData, point, dispatch, currentViewPort, currentTool, uid } = props;
@@ -166,6 +167,7 @@ const VesselViewport: React.FC<any> = (props) => {
         }}
       />
       {imgId === 'vr' && <Operation3D />}
+      {imgId === 0 && <ThicknessType />}
     </>
   );
 };
