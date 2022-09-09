@@ -465,11 +465,15 @@ def get_mpr_data(
     hm = get_monkey_instance(uid)
     b64str = hm.GetPlaneData_pngString(mk.PlaneType(plane_type))
     pt = hm.GetCrossHairPoint(mk.PlaneType(plane_type))
+    index = hm.GetPlaneIndex(mk.PlaneType(plane_type))
+    total_num = hm.GetPlaneNumber(mk.PlaneType(plane_type))
 
     return {
         'data': {
             "x": pt.x(),
             "y": pt.y(),
+            "index": index,
+            "total_num": total_num,
             'image': b64str
         },
         'message': 'successful'
@@ -606,6 +610,19 @@ def rotate_cross_hair(
 ):
     hm = get_monkey_instance(uid)
     hm.RotateCrossHair(angle, mk.PlaneType(plane_type))
+
+    return {
+        'message': 'successful'
+    }
+
+@app.get('/setmprindex')
+def set_plane_index(
+    uid: str,
+    index: int,
+    plane_type: int
+):
+    hm = get_monkey_instance(uid)
+    hm.SetPlaneIndex(index, mk.PlaneType(plane_type))
 
     return {
         'message': 'successful'
