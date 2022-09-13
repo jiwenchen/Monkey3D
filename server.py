@@ -479,6 +479,26 @@ def get_mpr_data(
         'message': 'successful'
     }
 
+@app.get('/mprinfo')
+def get_mpr_info(
+    uid: str,
+    plane_type: int
+):
+    hm = get_monkey_instance(uid)
+    pt = hm.GetCrossHairPoint(mk.PlaneType(plane_type))
+    index = hm.GetPlaneIndex(mk.PlaneType(plane_type))
+    total_num = hm.GetPlaneNumber(mk.PlaneType(plane_type))
+
+    return {
+        'data': {
+            "x": pt.x(),
+            "y": pt.y(),
+            "index": index,
+            "total_num": total_num
+        },
+        'message': 'successful'
+    }
+
 
 @app.get('/rotatestretchedcpr')
 def get_stretched_cpr(
