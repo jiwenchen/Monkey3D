@@ -15,11 +15,12 @@ import Operation3D from '@/pages/imageViewer/components/Operation3D';
 import mprOperateLine from '@/common/cornerstone/mprOperateLine';
 import _ from 'lodash';
 import ThicknessType from '../components/ThicknessType';
+import Scrollbar from '../components/Scrollbar';
 
 const VesselViewport: React.FC<any> = (props) => {
-  const { imgId, imageData, point, dispatch, currentViewPort, currentTool, uid } = props;
+  const { imgId, imageData, mprInfo, dispatch, currentViewPort, currentTool, uid } = props;
   const base64Data = imageData[imgId];
-  const currentPoint = point[imgId];
+  const currentPoint = mprInfo[imgId];
   const canvasId = `vesselImage-${imgId}`;
   const elementRef = useRef<any | HTMLDivElement>(null);
 
@@ -153,6 +154,9 @@ const VesselViewport: React.FC<any> = (props) => {
       <div
         id={canvasId}
         className={classnames('vessel-cornerstone-image', styles.box, {
+          [styles.blue]: imgId === 0,
+          [styles.pink]: imgId === 1,
+          [styles.yellow]: imgId === 2,
           [styles.focused]: currentViewPort.imgId === imgId,
         })}
         ref={elementRef}
@@ -168,6 +172,7 @@ const VesselViewport: React.FC<any> = (props) => {
       />
       {imgId === 'vr' && <Operation3D />}
       {imgId === 0 && <ThicknessType />}
+      {mprInfo[imgId] && <Scrollbar planeType={imgId} />}
     </>
   );
 };
@@ -179,8 +184,8 @@ export default connect(
     image3DModel: image3DStateType;
     viewport3DModel: viewport3DStateType;
   }) => {
-    const { imageData, point, uid } = image3DModel;
+    const { imageData, mprInfo, uid } = image3DModel;
     const { currentViewPort, currentTool } = viewport3DModel;
-    return { imageData, point, currentViewPort, currentTool, uid };
+    return { imageData, mprInfo, currentViewPort, currentTool, uid };
   },
 )(VesselViewport);

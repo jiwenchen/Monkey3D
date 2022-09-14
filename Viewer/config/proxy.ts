@@ -29,6 +29,12 @@ export default {
       secure: false,
       logLevel: 'debug',
     },
+    '/mprinfo': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
     '/vrdata': {
       target: proxyIPs.dev,
       changeOrigin: true,
@@ -120,6 +126,12 @@ export default {
       logLevel: 'debug',
     },
     '/updatemprtype': {
+      target: proxyIPs.dev,
+      changeOrigin: true,
+      secure: false,
+      logLevel: 'debug',
+    },
+    '/setmprindex': {
       target: proxyIPs.dev,
       changeOrigin: true,
       secure: false,
@@ -137,6 +149,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
+    '/mprinfo': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
     '/vrdata': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
@@ -213,6 +230,11 @@ export default {
       pathRewrite: { '^': '' },
     },
     '/updatemprtype': {
+      target: proxyIPs.pre || proxyIPs.dev,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/setmprindex': {
       target: proxyIPs.pre || proxyIPs.dev,
       changeOrigin: true,
       pathRewrite: { '^': '' },

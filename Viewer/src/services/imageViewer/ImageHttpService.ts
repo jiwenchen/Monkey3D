@@ -14,6 +14,11 @@ export async function getMprData(payload: any) {
   return reqGet(endpoint, payload);
 }
 
+export async function getMprInfo(payload: any) {
+  const endpoint = `/mprinfo`;
+  return reqGet(endpoint, payload);
+}
+
 export async function mprBrowse(payload: any) {
   const endpoint = `/mprbrowse`;
   return reqGet(endpoint, payload);
@@ -76,6 +81,11 @@ export async function getOrientation(payload: any) {
 
 export async function setThickness(payload: any) {
   const endpoint = `/setthickness`;
+  return reqGet(endpoint, payload);
+}
+
+export async function setMprIndex(payload: any) {
+  const endpoint = `/setmprindex`;
   return reqGet(endpoint, payload);
 }
 

@@ -14,7 +14,7 @@ const GridLayouts: React.FC<any> = (props) => {
     onLayoutChange: function () {},
     isDraggable: false,
     isResizable: false,
-    margin: [1, 1],
+    margin: [2, 2],
   });
 
   return (
