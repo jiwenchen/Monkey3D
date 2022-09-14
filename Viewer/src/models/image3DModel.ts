@@ -1,5 +1,6 @@
 import {
   getMprData,
+  getMprInfo,
   getOrientation,
   getVolumetype,
   getVrData,
@@ -11,6 +12,7 @@ import {
   resetVr,
   rotatech,
   rotateVr,
+  setMprIndex,
   setRenderType,
   setThickness,
   setVrSize,
@@ -27,13 +29,14 @@ interface image3DModelType {
   reducers: {
     InitState: ImmerReducer<image3DStateType>;
     setImageData: ImmerReducer<image3DStateType>;
-    setPoint: ImmerReducer<image3DStateType>;
+    setMprInfo: ImmerReducer<image3DStateType>;
     setUid: ImmerReducer<image3DStateType>;
   };
   effects: {
     initServer: Effect;
     getVolumetype: Effect;
     getMprData: Effect;
+    getMprInfo: Effect;
     panMpr: Effect;
     rotatech: Effect;
     getVrData: Effect;
@@ -46,6 +49,7 @@ interface image3DModelType {
     orientation: Effect;
     setVrSize: Effect;
     setThickness: Effect;
+    setMprIndex: Effect;
     releaseServer: Effect;
     updatemprType: Effect;
   };
@@ -55,7 +59,7 @@ interface image3DModelType {
 }
 const image3DModelState = () => ({
   imageData: {},
-  point: {},
+  mprInfo: {},
   uid: '',
 });
 
@@ -69,8 +73,8 @@ const image3DModel: image3DModelType = {
     setImageData: function (state, action) {
       state.imageData = action.payload;
     },
-    setPoint: function (state, action) {
-      state.point = action.payload;
+    setMprInfo: function (state, action) {
+      state.mprInfo = action.payload;
     },
     setUid: function (state, action) {
       state.uid = action.payload;
@@ -100,17 +104,49 @@ const image3DModel: image3DModelType = {
         console.error('request failed');
         return;
       }
-      let point = yield select(
-        (state: { image3DModel: { point: any } }) => state.image3DModel.point,
+      let mprInfo = yield select(
+        (state: { image3DModel: { mprInfo: any } }) => state.image3DModel.mprInfo,
       );
-      point = { ...point, [plane_type]: { x: result.data.x, y: result.data.y } };
-      yield put({ type: 'setPoint', payload: point });
-
+      if (result.data.index && result.data.total_num) {
+        mprInfo = {
+          ...mprInfo,
+          [plane_type]: {
+            x: result.data.x,
+            y: result.data.y,
+            index: result.data.index,
+            total_num: result.data.total_num,
+          },
+        };
+        yield put({ type: 'setMprInfo', payload: mprInfo });
+      }
       let imageData = yield select(
         (state: { image3DModel: { imageData: any } }) => state.image3DModel.imageData,
       );
       imageData = { ...imageData, [plane_type]: result.data.image };
       yield put({ type: 'setImageData', payload: imageData });
+      return true;
+    },
+
+    *getMprInfo({ payload }, { call, select, put }) {
+      const { plane_type } = payload;
+      const result: { data: any; message: boolean } = yield call(getMprInfo, payload);
+      if (!result?.data || !result.message) {
+        console.error('request failed');
+        return;
+      }
+      let mprInfo = yield select(
+        (state: { image3DModel: { mprInfo: any } }) => state.image3DModel.mprInfo,
+      );
+      mprInfo = {
+        ...mprInfo,
+        [plane_type]: result.data,
+      };
+      yield put({ type: 'setMprInfo', payload: mprInfo });
+      return result.data;
+    },
+    *setMprIndex({ payload }, { call }) {
+      const result: { message: boolean } = yield call(setMprIndex, payload);
+      return result?.message;
     },
     *panMpr({ payload }, { call }) {
       yield call(panMpr, payload);

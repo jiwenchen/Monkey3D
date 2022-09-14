@@ -1,6 +1,6 @@
 interface image3DStateType {
   imageData: any;
-  point: any;
+  mprInfo: any;
   uid: string;
 }
 

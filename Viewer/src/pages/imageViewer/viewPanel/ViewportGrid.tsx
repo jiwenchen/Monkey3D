@@ -21,7 +21,7 @@ function ViewportGrid(props: ViewportGridProps) {
 
   useEffect(() => {
     //切换布局，重新设置行高, cols和layout
-    setRowHeight(Math.floor($('.gridContainer').height() / numRows));
+    setRowHeight(Math.floor($('.gridContainer').height() / numRows) - 3);
     setLayouts(generateSpecialLayout(numRows, numColumns, 0, 2));
     setCols(numColumns);
     setWidth($('.gridContainer').width() - 95);
@@ -29,7 +29,7 @@ function ViewportGrid(props: ViewportGridProps) {
 
   useEffect(() => {
     window.addEventListener('resize', () => {
-      setRowHeight(Math.floor($('.gridContainer').height() / numRows));
+      setRowHeight(Math.floor($('.gridContainer').height() / numRows) - 3);
       setWidth($('.gridContainer').width());
       resizeAllImage();
     });
@@ -39,7 +39,10 @@ function ViewportGrid(props: ViewportGridProps) {
   }, []);
 
   return (
-    <div style={{ position: 'relative', height: 'calc(100vh - 2px)' }} className={'gridContainer'}>
+    <div
+      style={{ position: 'relative', height: 'calc(100vh)', background: 'black' }}
+      className={'gridContainer'}
+    >
       {rowHeight && <GridLayout layout={layouts} cols={cols} rowHeight={rowHeight} width={width} />}
     </div>
   );
