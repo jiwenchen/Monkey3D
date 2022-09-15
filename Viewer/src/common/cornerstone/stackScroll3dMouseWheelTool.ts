@@ -3,6 +3,7 @@ const BaseTool = csTools.importInternal('base/BaseTool');
 import cornerstone from 'cornerstone-core';
 import _ from 'lodash';
 import { getDvaApp } from 'umi';
+import { scrollBarsetMprInfo } from '@/utils/vesselManager';
 
 /**
  * @public
@@ -41,9 +42,13 @@ export default class StackScroll3dMouseWheelTool extends BaseTool {
     const { imageId } = cornerstone.getImage(element);
     const dva = getDvaApp()._store;
     const uid = dva.getState().image3DModel.uid;
-    getDvaApp()._store.dispatch({
-      type: 'image3DModel/getMprData',
-      payload: { plane_type: imageId.split('//')[1], delta: direction, uid },
-    });
+    getDvaApp()
+      ._store.dispatch({
+        type: 'image3DModel/getMprData',
+        payload: { plane_type: imageId.split('//')[1], delta: direction, uid },
+      })
+      .then((res: boolean) => {
+        if (res) scrollBarsetMprInfo(Number(imageId.split('//')[1]), true);
+      });
   }
 }

@@ -1936,6 +1936,7 @@ function setMprOperateLinePos(
     let operateLinePos = operateLine.getOperateLinePos();
     if (coordinate) {
       operateLine.setOperateLinePos(coordinate);
+      cornerstone.updateImage(operateLine.element);
       return;
     }
     if (changeType === 'horizontalLine') {

@@ -77,6 +77,23 @@ export const getAllMprData = (sliceType?: string) => {
   });
 };
 
+export const scrollBarsetMprInfo = (imgId: number, noFilter?: boolean) => {
+  let data = [0, 1, 2];
+  if (!noFilter) data = data.filter((i: number) => i !== imgId);
+  const dva = getDvaApp()._store;
+  const uid = dva.getState().image3DModel.uid;
+  data.forEach((num) => {
+    getDvaApp()
+      ._store.dispatch({
+        type: 'image3DModel/getMprInfo',
+        payload: { plane_type: num, uid },
+      })
+      .then((res: any) => {
+        mprOperateLine.setMprOperateLinePos(revertName(num), { x: res.x, y: res.y });
+      });
+  });
+};
+
 // 0:Axial,1:Sagittal,2:Coronal
 // 蓝：Axial 红：Sagittal，黄：Coronal，
 export const revertName = (imgId: number) => {
