@@ -240,8 +240,7 @@ def set_line_index(
         if line_index == 1:
             cpr_line = np.array(lines.get('line1', []))
         elif line_index == 2:
-            cpr_line = np.array(
-            )
+            cpr_line = np.array([])
     
     hm = get_monkey_instance(uid)
     hm.SetCPRLinePatientArray(cpr_line)
@@ -542,11 +541,15 @@ def browse_mpr_data(
 ):
     hm = get_monkey_instance(uid)
     hm.Browse(delta, mk.PlaneType(plane_type))
+    index = hm.GetPlaneIndex(mk.PlaneType(plane_type))
+    total_num = hm.GetPlaneNumber(mk.PlaneType(plane_type))
     b64str = hm.GetPlaneData_pngString(mk.PlaneType(plane_type))
 
     print( hm.GetPlaneCurrentIndex(mk.PlaneType(plane_type)), hm.GetPlaneTotalNumber(mk.PlaneType(plane_type)))
 
     return {
+        "index": index,
+        "total_num": total_num,
         'data': {
             'image': b64str
         },
