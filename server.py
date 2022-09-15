@@ -548,9 +548,9 @@ def browse_mpr_data(
     print( hm.GetPlaneCurrentIndex(mk.PlaneType(plane_type)), hm.GetPlaneTotalNumber(mk.PlaneType(plane_type)))
 
     return {
-        "index": index,
-        "total_num": total_num,
         'data': {
+            "index": index,
+            "total_num": total_num,
             'image': b64str
         },
         'message': 'successful'
