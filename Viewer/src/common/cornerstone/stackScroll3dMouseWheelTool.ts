@@ -22,7 +22,7 @@ export default class StackScroll3dMouseWheelTool extends BaseTool {
         loop: false,
         allowSkipping: true,
         invert: false,
-        throttleWait: 100,
+        throttleWait: 150,
       },
     };
 
@@ -42,13 +42,14 @@ export default class StackScroll3dMouseWheelTool extends BaseTool {
     const { imageId } = cornerstone.getImage(element);
     const dva = getDvaApp()._store;
     const uid = dva.getState().image3DModel.uid;
-    getDvaApp()
-      ._store.dispatch({
+    dva
+      .dispatch({
         type: 'image3DModel/getMprData',
         payload: { plane_type: imageId.split('//')[1], delta: direction, uid },
       })
       .then((res: boolean) => {
-        if (res) scrollBarsetMprInfo(Number(imageId.split('//')[1]), true);
+        //更新其他图片中心坐标
+        if (res) scrollBarsetMprInfo(Number(imageId.split('//')[1]));
       });
   }
 }

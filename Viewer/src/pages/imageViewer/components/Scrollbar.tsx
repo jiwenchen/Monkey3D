@@ -30,9 +30,10 @@ const Scrollbar: React.FC<ScrollbarPropType> = ({ dispatch, mprInfo, uid, planeT
         dispatch({
           type: 'image3DModel/getMprData',
           payload: { plane_type: planeType, uid },
+        }).then((res: boolean) => {
+          //更新其他图片中心坐标
+          if (res) scrollBarsetMprInfo(planeType);
         });
-        //更新其他图片中心坐标
-        scrollBarsetMprInfo(planeType);
       }
     });
   };
