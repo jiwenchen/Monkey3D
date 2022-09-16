@@ -70,7 +70,7 @@ export const getAllMprData = (sliceType?: string) => {
   const dva = getDvaApp()._store;
   const uid = dva.getState().image3DModel.uid;
   data.forEach((num) => {
-    getDvaApp()._store.dispatch({
+    dva.dispatch({
       type: 'image3DModel/getMprData',
       payload: { plane_type: num, uid },
     });
@@ -83,8 +83,8 @@ export const scrollBarsetMprInfo = (imgId: number, noFilter?: boolean) => {
   const dva = getDvaApp()._store;
   const uid = dva.getState().image3DModel.uid;
   data.forEach((num) => {
-    getDvaApp()
-      ._store.dispatch({
+    dva
+      .dispatch({
         type: 'image3DModel/getMprInfo',
         payload: { plane_type: num, uid },
       })
