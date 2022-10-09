@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './Tool.less';
 import type { Dispatch } from '@@/plugin-dva/connect';
 import { connect } from 'umi';
@@ -7,8 +7,9 @@ import {
   resetElement,
   resetVr,
 } from '@/common/cornerstone/cornerstoneToolsManager';
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 import Upload from './upload';
+import Histogram from '../components/histogram';
 
 interface ImageViewerProps {
   dispatch: Dispatch;
@@ -18,17 +19,19 @@ interface ImageViewerProps {
 
 const Tool: React.FC<ImageViewerProps> = (props) => {
   const { dispatch, currentViewPort, uid } = props;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  // 页面关闭、刷新
+  window.onbeforeunload = (e) => {
+    dispatch({
+      type: 'image3DModel/releaseServer',
+      payload: { uid },
+    });
+  };
+
   const clickHandler = (tool: string) => {
     dispatch({
       type: 'viewport3DModel/setCurrentTool',
       payload: tool,
-    });
-  };
-
-  const handelReleaseServer = () => {
-    dispatch({
-      type: 'image3DModel/releaseServer',
-      payload: { uid },
     });
   };
 
@@ -41,8 +44,16 @@ const Tool: React.FC<ImageViewerProps> = (props) => {
     }
   };
 
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   const openEcharts = () => {
-    return <></>;
+    setIsModalOpen(true);
   };
 
   return (
@@ -55,8 +66,10 @@ const Tool: React.FC<ImageViewerProps> = (props) => {
           </Button>
         ))}
         <Button onClick={() => handelReset()}>reset</Button>
-        <Button onClick={() => handelReleaseServer()}>release</Button>
         <Button onClick={() => openEcharts()}>echarts</Button>
+        <Modal visible={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={1000}>
+          <Histogram />
+        </Modal>
       </div>
     </>
   );
