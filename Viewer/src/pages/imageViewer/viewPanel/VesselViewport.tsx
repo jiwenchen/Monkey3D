@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import { connect } from 'umi';
 import classnames from 'classnames';
 import styles from './VesselViewport.less';
@@ -17,12 +17,18 @@ import _ from 'lodash';
 import ThicknessType from '../components/ThicknessType';
 import Scrollbar from '../components/Scrollbar';
 
-const VesselViewport: React.FC<any> = (props) => {
+const VesselViewport: React.FC<any> = forwardRef((props, ref) => {
   const { imgId, imageData, mprInfo, dispatch, currentViewPort, currentTool, uid } = props;
   const base64Data = imageData[imgId];
   const currentPoint = mprInfo[imgId];
   const canvasId = `vesselImage-${imgId}`;
   const elementRef = useRef<any | HTMLDivElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    open() {
+      console.log('子组建给父组件传值。。。。');
+    },
+  }));
 
   useEffect(() => {
     if (uid) {
@@ -175,7 +181,7 @@ const VesselViewport: React.FC<any> = (props) => {
       {mprInfo[imgId] && <Scrollbar planeType={imgId} />}
     </>
   );
-};
+});
 export default connect(
   ({
     image3DModel,
@@ -188,4 +194,7 @@ export default connect(
     const { currentViewPort, currentTool } = viewport3DModel;
     return { imageData, mprInfo, currentViewPort, currentTool, uid };
   },
+  null,
+  null,
+  { forwardRef: true },
 )(VesselViewport);

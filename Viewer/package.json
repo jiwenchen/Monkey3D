@@ -62,6 +62,7 @@
     "cornerstone-wado-image-loader": "^4.1.1",
     "dicom-parser": "^1.8.11",
     "dva-immer": "^1.0.0",
+    "echarts": "^5.4.0",
     "hammerjs": "^2.0.8",
     "jquery": "^3.6.0",
     "keycloak-js": "^8.0.1",
@@ -90,6 +91,7 @@
     "@types/history": "^4.7.2",
     "@types/jest": "^26.0.0",
     "@types/lodash": "^4.14.144",
+    "@types/md5": "^2.3.2",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-helmet": "^6.1.0",
@@ -113,8 +115,7 @@
     "prettier": "^2.3.2",
     "puppeteer-core": "^8.0.0",
     "stylelint": "^13.0.0",
-    "typescript": "^4.2.2",
-    "@types/md5": "^2.3.2"
+    "typescript": "^4.2.2"
   },
   "engines": {
     "node": ">=10.0.0"
