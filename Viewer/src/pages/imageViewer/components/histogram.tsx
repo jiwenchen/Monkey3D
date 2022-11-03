@@ -1,5 +1,9 @@
+import _ from 'lodash';
+import { InputNumber } from 'antd';
 import * as echarts from 'echarts';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { HuePicker } from 'react-color';
+import styles from './histogram.less';
 type EChartsOption = echarts.EChartsOption;
 
 interface HistogramProps {}
@@ -7,7 +11,7 @@ interface HistogramProps {}
 const Histogram: React.FC<HistogramProps> = (props) => {
   const chartDom = useRef(null);
   const symbolSize = 20;
-  const data = [
+  let data = [
     [0, 0.5],
     [30, 0.7],
     [50, 0.3],
@@ -15,6 +19,7 @@ const Histogram: React.FC<HistogramProps> = (props) => {
     [100, 1],
   ];
   const color = ['black', 'yellow', 'blue', 'green', 'red'];
+  const [hueColor, setHueColor] = useState({ background: '#fff' });
 
   const option: EChartsOption = {
     title: {
@@ -43,28 +48,6 @@ const Histogram: React.FC<HistogramProps> = (props) => {
       type: 'value',
       axisLine: { onZero: false },
     },
-    dataZoom: [
-      {
-        type: 'slider',
-        xAxisIndex: 0,
-        filterMode: 'none',
-      },
-      {
-        type: 'slider',
-        yAxisIndex: 0,
-        filterMode: 'none',
-      },
-      {
-        type: 'inside',
-        xAxisIndex: 0,
-        filterMode: 'none',
-      },
-      {
-        type: 'inside',
-        yAxisIndex: 0,
-        filterMode: 'none',
-      },
-    ],
     // visualMap: {
     //   type: 'piecewise',
     //   dimension: 0,
@@ -145,6 +128,7 @@ const Histogram: React.FC<HistogramProps> = (props) => {
               },
               invisible: true,
               draggable: true,
+              bouding: 'raw',
               ondrag: function (dx: number, dy: number) {
                 onPointDragging(dataIndex, [(this as any).x, (this as any).y]);
               },
@@ -160,9 +144,59 @@ const Histogram: React.FC<HistogramProps> = (props) => {
         });
       }, 0);
 
+      const zr = myChart.getZr();
+      zr.on('click', function (params: any) {
+        const pointInPixel = [params.offsetX, params.offsetY];
+        const pointInGrid = myChart.convertFromPixel('grid', pointInPixel);
+        if (myChart.containPixel('grid', pointInPixel)) {
+          data.push(pointInGrid);
+          data = data.sort((a, b) => {
+            return a[0] - b[0];
+          });
+          myChart.setOption({
+            graphic: data.map(function (item, dataIndex) {
+              return {
+                type: 'circle',
+                position: myChart.convertToPixel('grid', item),
+                shape: {
+                  cx: 0,
+                  cy: 0,
+                  r: symbolSize / 2,
+                },
+                invisible: true,
+                draggable: true,
+                bouding: 'raw',
+                ondrag: function (dx: number, dy: number) {
+                  onPointDragging(dataIndex, [(this as any).x, (this as any).y]);
+                },
+                onmousemove: function () {
+                  showTooltip(dataIndex);
+                },
+                onmouseout: function () {
+                  hideTooltip(dataIndex);
+                },
+                z: 100,
+              };
+            }),
+            series: [
+              {
+                id: 'a',
+                type: 'line',
+                smooth: false,
+                symbolSize: symbolSize,
+                data: data,
+              },
+            ],
+          });
+        }
+      });
+      zr.on('mousemove', function (params: any) {
+        const pointInPixel = [params.offsetX, params.offsetY];
+        zr.setCursorStyle(myChart.containPixel('grid', pointInPixel) ? 'copy' : 'default');
+      });
+
       window.addEventListener('resize', updatePosition);
       myChart.on('dataZoom', updatePosition);
-
       function updatePosition() {
         myChart.setOption({
           graphic: data.map(function (item, dataIndex) {
@@ -172,7 +206,6 @@ const Histogram: React.FC<HistogramProps> = (props) => {
           }),
         });
       }
-
       function showTooltip(dataIndex: number) {
         myChart.dispatchAction({
           type: 'showTip',
@@ -180,15 +213,16 @@ const Histogram: React.FC<HistogramProps> = (props) => {
           dataIndex: dataIndex,
         });
       }
-
       function hideTooltip(dataIndex: number) {
         myChart.dispatchAction({
           type: 'hideTip',
         });
       }
-
       function onPointDragging(dataIndex: number, pos: number[]) {
-        data[dataIndex] = myChart.convertFromPixel('grid', pos);
+        const revertData = myChart.convertFromPixel('grid', pos);
+        if (revertData[0] >= data[dataIndex + 1]?.[0] || revertData[0] <= data[dataIndex - 1]?.[0])
+          return;
+        data[dataIndex] = revertData;
         // Update data
         myChart.setOption({
           series: [
@@ -206,6 +240,37 @@ const Histogram: React.FC<HistogramProps> = (props) => {
     }
   }, [chartDom]);
 
-  return <div ref={chartDom} style={{ height: '650px', width: '950px' }} />;
+  const handleChangeComplete = (color: any) => {
+    console.log('color', color);
+    setHueColor({ background: color.hex });
+  };
+
+  const onWWChange = (value: number) => {
+    console.log('changed', value);
+  };
+  const onWCChange = (value: number) => {
+    console.log('changed', value);
+  };
+
+  return (
+    <>
+      <div>
+        <div ref={chartDom} className={styles.chartHistogram} />
+        <div className={styles.picker}>
+          <HuePicker width={755} color={hueColor} onChangeComplete={handleChangeComplete} />
+        </div>
+        <div className={styles.inputNum}>
+          <span>
+            WW:
+            <InputNumber defaultValue={0} onChange={onWWChange} />
+          </span>
+          <span className={styles.wc}>
+            WC:
+            <InputNumber defaultValue={0} onChange={onWCChange} />
+          </span>
+        </div>
+      </div>
+    </>
+  );
 };
 export default Histogram;

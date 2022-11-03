@@ -21,6 +21,7 @@ declare module 'cornerstone-math';
 declare module 'local-png-js';
 declare module 'jquery';
 declare module 'react-grid-layout';
+declare module 'react-color';
 
 // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design Dedicated environment variable, please do not use it in your project.
