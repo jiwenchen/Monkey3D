@@ -7,20 +7,19 @@ import styles from './histogram.less';
 type EChartsOption = echarts.EChartsOption;
 
 interface HistogramProps {}
-
+let myChart: any;
 const Histogram: React.FC<HistogramProps> = (props) => {
   const chartDom = useRef(null);
   const symbolSize = 20;
-  let data = [
+  const color = ['black', 'yellow', 'blue', 'green', 'red'];
+  const data = [
     [0, 0.5],
     [30, 0.7],
     [50, 0.3],
     [70, 0.6],
     [100, 1],
   ];
-  const color = ['black', 'yellow', 'blue', 'green', 'red'];
   const [hueColor, setHueColor] = useState({ background: '#fff' });
-
   const option: EChartsOption = {
     title: {
       text: 'Try Dragging these Points',
@@ -48,43 +47,6 @@ const Histogram: React.FC<HistogramProps> = (props) => {
       type: 'value',
       axisLine: { onZero: false },
     },
-    // visualMap: {
-    //   type: 'piecewise',
-    //   dimension: 0,
-    //   seriesIndex: 0,
-    //   pieces: [
-    //     {
-    //       gte: 0,
-    //       lte: 15,
-    //       color: 'rgba(0, 0, 180)',
-    //     },
-    //     {
-    //       gte: 15,
-    //       lte: 30,
-    //       color: 'rgba(255, 0, 0)',
-    //     },
-    //     {
-    //       gte: 30,
-    //       lte: 40,
-    //       color: 'rgba(240, 230, 140)',
-    //     },
-    //     {
-    //       gte: 40,
-    //       lte: 70,
-    //       color: 'rgba(160, 32, 240)',
-    //     },
-    //     {
-    //       gte: 70,
-    //       lte: 80,
-    //       color: 'rgba(221, 160, 221)',
-    //     },
-    //     {
-    //       gte: 80,
-    //       lte: 100,
-    //       color: 'rgba(124, 252, 0)',
-    //     },
-    //   ],
-    // },
     series: [
       {
         id: 'a',
@@ -111,80 +73,65 @@ const Histogram: React.FC<HistogramProps> = (props) => {
     ],
   };
 
+  const graphic = (myChart: any) => {
+    return data.map(function (item, dataIndex) {
+      return {
+        type: 'circle',
+        position: myChart.convertToPixel('grid', item),
+        shape: {
+          cx: 0,
+          cy: 0,
+          r: symbolSize / 2,
+        },
+        invisible: true,
+        draggable: true,
+        bouding: 'raw',
+        ondrag: function (dx: number, dy: number) {
+          onPointDragging(dataIndex, [(this as any).x, (this as any).y]);
+        },
+        onmousemove: function () {
+          showTooltip(dataIndex);
+        },
+        onmouseout: function () {
+          hideTooltip(dataIndex);
+        },
+        z: 100,
+      };
+    });
+  };
+
   useEffect(() => {
     if (chartDom.current) {
-      const myChart = echarts.init(chartDom.current);
-      setTimeout(function () {
-        // Add shadow circles (which is not visible) to enable drag.
+      myChart = echarts.init(chartDom.current);
+      window.addEventListener('resize', updatePosition);
+      myChart.on('dataZoom', updatePosition);
+      option && myChart.setOption(option);
+      //设置拖拽
+      setTimeout(() => {
         myChart.setOption({
-          graphic: data.map(function (item, dataIndex) {
-            return {
-              type: 'circle',
-              position: myChart.convertToPixel('grid', item),
-              shape: {
-                cx: 0,
-                cy: 0,
-                r: symbolSize / 2,
-              },
-              invisible: true,
-              draggable: true,
-              bouding: 'raw',
-              ondrag: function (dx: number, dy: number) {
-                onPointDragging(dataIndex, [(this as any).x, (this as any).y]);
-              },
-              onmousemove: function () {
-                showTooltip(dataIndex);
-              },
-              onmouseout: function () {
-                hideTooltip(dataIndex);
-              },
-              z: 100,
-            };
-          }),
+          graphic: graphic(myChart),
         });
       }, 0);
 
+      // 增加点
       const zr = myChart.getZr();
       zr.on('click', function (params: any) {
         const pointInPixel = [params.offsetX, params.offsetY];
         const pointInGrid = myChart.convertFromPixel('grid', pointInPixel);
         if (myChart.containPixel('grid', pointInPixel)) {
           data.push(pointInGrid);
-          data = data.sort((a, b) => {
+          const sortData = data.sort((a, b) => {
             return a[0] - b[0];
           });
           myChart.setOption({
-            graphic: data.map(function (item, dataIndex) {
-              return {
-                type: 'circle',
-                position: myChart.convertToPixel('grid', item),
-                shape: {
-                  cx: 0,
-                  cy: 0,
-                  r: symbolSize / 2,
-                },
-                invisible: true,
-                draggable: true,
-                bouding: 'raw',
-                ondrag: function (dx: number, dy: number) {
-                  onPointDragging(dataIndex, [(this as any).x, (this as any).y]);
-                },
-                onmousemove: function () {
-                  showTooltip(dataIndex);
-                },
-                onmouseout: function () {
-                  hideTooltip(dataIndex);
-                },
-                z: 100,
-              };
-            }),
+            graphic: graphic(myChart),
             series: [
               {
                 id: 'a',
                 type: 'line',
                 smooth: false,
                 symbolSize: symbolSize,
-                data: data,
+                data: sortData,
               },
             ],
           });
@@ -194,57 +141,53 @@ const Histogram: React.FC<HistogramProps> = (props) => {
         const pointInPixel = [params.offsetX, params.offsetY];
         zr.setCursorStyle(myChart.containPixel('grid', pointInPixel) ? 'copy' : 'default');
       });
-
-      window.addEventListener('resize', updatePosition);
-      myChart.on('dataZoom', updatePosition);
-      function updatePosition() {
-        myChart.setOption({
-          graphic: data.map(function (item, dataIndex) {
-            return {
-              position: myChart.convertToPixel('grid', item),
-            };
-          }),
-        });
-      }
-      function showTooltip(dataIndex: number) {
-        myChart.dispatchAction({
-          type: 'showTip',
-          seriesIndex: 0,
-          dataIndex: dataIndex,
-        });
-      }
-      function hideTooltip(dataIndex: number) {
-        myChart.dispatchAction({
-          type: 'hideTip',
-        });
-      }
-      function onPointDragging(dataIndex: number, pos: number[]) {
-        const revertData = myChart.convertFromPixel('grid', pos);
-        if (revertData[0] >= data[dataIndex + 1]?.[0] || revertData[0] <= data[dataIndex - 1]?.[0])
-          return;
-        data[dataIndex] = revertData;
-        // Update data
-        myChart.setOption({
-          series: [
-            {
-              id: 'a',
-              type: 'line',
-              smooth: false,
-              symbolSize: symbolSize,
-              data: data,
-            },
-          ],
-        });
-      }
-      option && myChart.setOption(option);
     }
   }, [chartDom]);
+
+  function updatePosition() {
+    myChart.setOption({
+      graphic: data.map(function (item, dataIndex) {
+        return {
+          position: myChart.convertToPixel('grid', item),
+        };
+      }),
+    });
+  }
+  function showTooltip(dataIndex: number) {
+    myChart.dispatchAction({
+      type: 'showTip',
+      seriesIndex: 0,
+      dataIndex: dataIndex,
+    });
+  }
+  function hideTooltip(dataIndex: number) {
+    myChart.dispatchAction({
+      type: 'hideTip',
+    });
+  }
+  function onPointDragging(dataIndex: number, pos: number[]) {
+    const revertData = myChart.convertFromPixel('grid', pos);
+    if (revertData[0] >= data[dataIndex + 1]?.[0] || revertData[0] <= data[dataIndex - 1]?.[0])
+      return;
+    data[dataIndex] = revertData;
+    // Update data
+    myChart.setOption({
+      series: [
+        {
+          id: 'a',
+          type: 'line',
+          smooth: false,
+          symbolSize: symbolSize,
+          data: data,
+        },
+      ],
+    });
+  }
 
   const handleChangeComplete = (color: any) => {
     console.log('color', color);
     setHueColor({ background: color.hex });
   };
-
   const onWWChange = (value: number) => {
     console.log('changed', value);
   };
