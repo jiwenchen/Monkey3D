@@ -1,8 +1,7 @@
-import _ from 'lodash';
 import { InputNumber } from 'antd';
 import * as echarts from 'echarts';
 import React, { useEffect, useRef, useState } from 'react';
-import { HuePicker } from 'react-color';
+import { ChromePicker } from 'react-color';
 import styles from './histogram.less';
 type EChartsOption = echarts.EChartsOption;
 
@@ -19,7 +18,9 @@ const Histogram: React.FC<HistogramProps> = (props) => {
     [70, 0.6],
     [100, 1],
   ];
-  const [hueColor, setHueColor] = useState({ background: '#fff' });
+  const [hueColor, setHueColor] = useState();
+  const [xy, setXy] = useState([0, 0]);
+  const [isVisible, setIsVisible] = useState(false);
   const option: EChartsOption = {
     title: {
       text: 'Try Dragging these Points',
@@ -57,9 +58,9 @@ const Histogram: React.FC<HistogramProps> = (props) => {
         areaStyle: {
           opacity: 0.8,
           color: new echarts.graphic.LinearGradient(
+            0,
+            0,
             1,
-            0,
-            0,
             0,
             data.map((item: any, index) => {
               return {
@@ -87,6 +88,7 @@ const Histogram: React.FC<HistogramProps> = (props) => {
         draggable: true,
         bouding: 'raw',
         ondrag: function (dx: number, dy: number) {
+          setIsVisible(false);
           onPointDragging(dataIndex, [(this as any).x, (this as any).y]);
         },
         onmousemove: function () {
@@ -119,6 +121,8 @@ const Histogram: React.FC<HistogramProps> = (props) => {
         const pointInPixel = [params.offsetX, params.offsetY];
         const pointInGrid = myChart.convertFromPixel('grid', pointInPixel);
         if (myChart.containPixel('grid', pointInPixel)) {
+          setIsVisible(true);
+          setXy([params.event.clientX - 86, params.event.clientY - 190]);
           data.push(pointInGrid);
           const sortData = data.sort((a, b) => {
             return a[0] - b[0];
@@ -179,15 +183,26 @@ const Histogram: React.FC<HistogramProps> = (props) => {
           smooth: false,
           symbolSize: symbolSize,
           data: data,
+          areaStyle: {
+            opacity: 0.8,
+            color: new echarts.graphic.LinearGradient(
+              0,
+              0,
+              1,
+              0,
+              data.map((item: any, index) => {
+                return {
+                  offset: item[0] / 100,
+                  color: color[index],
+                };
+              }),
+            ),
+          },
         },
       ],
     });
   }
 
-  const handleChangeComplete = (color: any) => {
-    console.log('color', color);
-    setHueColor({ background: color.hex });
-  };
   const onWWChange = (value: number) => {
     console.log('changed', value);
   };
@@ -195,13 +210,28 @@ const Histogram: React.FC<HistogramProps> = (props) => {
     console.log('changed', value);
   };
 
+  const handleChangeComplete = (color: any) => {
+    console.log('color', color);
+    setHueColor(color.rgb);
+  };
   return (
     <>
       <div>
         <div ref={chartDom} className={styles.chartHistogram} />
-        <div className={styles.picker}>
-          <HuePicker width={755} color={hueColor} onChangeComplete={handleChangeComplete} />
+        <div
+          style={{
+            position: 'absolute',
+            top: xy[1],
+            left: xy[0],
+            display: isVisible ? 'block' : 'none',
+            zIndex: '2',
+          }}
+        >
+          <ChromePicker color={hueColor} onChange={handleChangeComplete} />
         </div>
+        {/*<div className={styles.picker}>*/}
+        {/*  <HuePicker width={755} color={hueColor} onChangeComplete={handleChangeComplete} />*/}
+        {/*</div>*/}
         <div className={styles.inputNum}>
           <span>
             WW:
