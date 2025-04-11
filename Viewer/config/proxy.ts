@@ -6,7 +6,7 @@
  * For details, please see
  * https://pro.ant.design/docs/deploy
  */
-const proxyDev = 'http://192.168.6.41:7799';
+const proxyDev = 'http://192.168.6.37:7799';
 export const proxyIPs = {
   dev: proxyDev,
   production: '/',
